@@ -1,91 +1,51 @@
 # TRUST
 
-## Before you trust it, check it.
+TRUST is a web-based platform designed to help users evaluate suspicious messages, links, and online offers before trusting them.
 
-TRUST is a digital safety concept designed to help people
-evaluate suspicious messages, links, and online offers before
-they click, pay, reply, or share.
+## Features
 
----
+- Interactive trust and risk checker
+- Risk score and risk level assessment
+- Detection of suspicious signals
+- Recommendations based on detected risks
+- Contact and inquiry form
+- Frontend and backend validation
+- Inquiry storage in a SQLite database
+- Responsive design for desktop and mobile
 
-## Project Type
+## Technologies
 
-Company Landing Page
+- HTML
+- CSS
+- JavaScript
+- Node.js
+- Express.js
+- SQLite
 
-This project was created as a frontend prototype using:
+## Contact & Inquiry System
 
-- HTML5
-- CSS3
-- Vanilla JavaScript
+The contact form allows users to submit:
 
-No frameworks are required.
+- Name
+- Email
+- Subject
+- Message
 
----
+Submitted inquiries are sent to the backend through the `POST /api/contact` endpoint, validated, and stored in the SQLite database.
 
 ## Project Structure
 
+```text
 TRUST/
-
-├── index.html
 ├── css/
 │   └── style.css
+├── database/
+│   ├── database.js
+│   └── trust.db
 ├── js/
 │   └── script.js
-├── images/
+├── index.html
+├── server.js
+├── package.json
+├── package-lock.json
 └── README.md
-
----
-
-## Main Features
-
-- Responsive desktop/mobile design
-- Sticky navigation
-- Mobile navigation menu
-- Smooth scrolling
-- Interactive TRUST checker
-- Message / Link / Offer tabs
-- Character counter
-- Loading state
-- Simulated risk analysis
-- Animated TRUST score
-- Interactive cards
-- Hover effects
-- Scroll reveal animations
-- Responsive layout
-
----
-
-## Important Note
-
-The TRUST analysis shown in this prototype is simulated.
-
-The purpose of this project is to demonstrate the user
-experience and product concept.
-
-A future production version could connect the interface
-to a backend security analysis system, threat intelligence,
-URL reputation services, and AI/rule-based analysis.
-
----
-
-
-## Product Vision
-
-TRUST aims to become a simple digital safety layer that helps
-people make better decisions when they encounter suspicious
-digital content.
-
-Potential future features include:
-
-- Real-time URL analysis
-- Email analysis
-- Screenshot analysis
-- Browser extension
-- Mobile application
-- Personal risk history
-- Family protection
-- Threat intelligence
-- AI-assisted explanation
-- Account impersonation detection
-
----
