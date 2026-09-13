@@ -23,5 +23,20 @@ db.run(`
         console.log("Inquiries table is ready.");
     }
 });
+db.run(`
+    CREATE TABLE IF NOT EXISTS content (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        description TEXT NOT NULL,
+        category TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+`, (err) => {
+    if (err) {
+        console.error("Content table creation error:", err.message);
+    } else {
+        console.log("Content table is ready.");
+    }
+});
 
 module.exports = db;
