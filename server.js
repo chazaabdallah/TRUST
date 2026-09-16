@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
+const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
 
 const dbFolder = path.join(__dirname, "database");
 
@@ -17,6 +19,8 @@ const PORT = process.env.PORT || 3001;
 
 const ADMIN_TOKEN = "trust-admin-token-2026";
 
+const userTokens = new Map();
+
 
 // =========================================
 // ADMIN AUTHENTICATION
@@ -27,12 +31,32 @@ function requireAdmin(req, res, next) {
     const token = req.headers["x-admin-token"];
 
     if (token !== ADMIN_TOKEN) {
-
         return res.status(401).json({
             success: false,
             message: "Unauthorized. Admin login required."
         });
     }
+
+    next();
+}
+
+
+// =========================================
+// USER AUTHENTICATION
+// =========================================
+
+function requireUser(req, res, next) {
+
+    const token = req.headers["x-auth-token"];
+
+    if (!token || !userTokens.has(token)) {
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized. Please log in."
+        });
+    }
+
+    req.userId = userTokens.get(token);
 
     next();
 }
@@ -57,7 +81,7 @@ app.use(express.static(__dirname));
 
 
 // =========================================
-// ADMIN LOGIN
+// ADMIN LOGIN — TASK 3
 // =========================================
 
 app.post("/api/admin/login", (req, res) => {
@@ -65,7 +89,6 @@ app.post("/api/admin/login", (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-
         return res.status(400).json({
             success: false,
             message: "Username and password are required."
@@ -76,7 +99,6 @@ app.post("/api/admin/login", (req, res) => {
         username === "admin" &&
         password === "trustadmin"
     ) {
-
         return res.status(200).json({
             success: true,
             message: "Login successful.",
@@ -92,7 +114,253 @@ app.post("/api/admin/login", (req, res) => {
 
 
 // =========================================
-// GET CONTENT
+// USER REGISTRATION — TASK 4
+// =========================================
+
+app.post("/api/auth/register", async (req, res) => {
+
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+        return res.status(400).json({
+            success: false,
+            message: "Name, email and password are required."
+        });
+    }
+
+    const cleanName = name.trim();
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (cleanName === "" || cleanEmail === "") {
+        return res.status(400).json({
+            success: false,
+            message: "All fields are required."
+        });
+    }
+
+    const emailRegex =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(cleanEmail)) {
+        return res.status(400).json({
+            success: false,
+            message: "Please enter a valid email address."
+        });
+    }
+
+    if (password.length < 8) {
+        return res.status(400).json({
+            success: false,
+            message: "Password must be at least 8 characters."
+        });
+    }
+
+    try {
+
+        db.get(
+            `SELECT id FROM users WHERE email = ?`,
+            [cleanEmail],
+            async (err, user) => {
+
+                if (err) {
+                    console.error(err);
+
+                    return res.status(500).json({
+                        success: false,
+                        message: "Database error."
+                    });
+                }
+
+                if (user) {
+                    return res.status(409).json({
+                        success: false,
+                        message:
+                            "An account with this email already exists."
+                    });
+                }
+
+                const hashedPassword =
+                    await bcrypt.hash(password, 12);
+
+                db.run(
+                    `
+                    INSERT INTO users
+                    (name, email, password)
+                    VALUES (?, ?, ?)
+                    `,
+                    [
+                        cleanName,
+                        cleanEmail,
+                        hashedPassword
+                    ],
+                    function (err) {
+
+                        if (err) {
+                            console.error(err);
+
+                            return res.status(500).json({
+                                success: false,
+                                message: "Unable to create account."
+                            });
+                        }
+
+                        return res.status(201).json({
+                            success: true,
+                            message:
+                                "Account created successfully.",
+                            userId: this.lastID
+                        });
+                    }
+                );
+            }
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Unable to create account."
+        });
+    }
+});
+
+
+// =========================================
+// USER LOGIN — TASK 4
+// =========================================
+
+app.post("/api/auth/login", (req, res) => {
+
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({
+            success: false,
+            message: "Email and password are required."
+        });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    db.get(
+        `
+        SELECT id, name, email, password
+        FROM users
+        WHERE email = ?
+        `,
+        [cleanEmail],
+        async (err, user) => {
+
+            if (err) {
+                console.error(err);
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Database error."
+                });
+            }
+
+            if (!user) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Invalid email or password."
+                });
+            }
+
+            const passwordMatch =
+                await bcrypt.compare(
+                    password,
+                    user.password
+                );
+
+            if (!passwordMatch) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Invalid email or password."
+                });
+            }
+
+            const token =
+                crypto.randomBytes(32).toString("hex");
+
+            userTokens.set(token, user.id);
+
+            return res.status(200).json({
+                success: true,
+                message: "Login successful.",
+                token: token,
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email
+                }
+            });
+        }
+    );
+});
+
+
+// =========================================
+// PROTECTED USER PROFILE — TASK 4
+// =========================================
+
+app.get("/api/auth/me", requireUser, (req, res) => {
+
+    db.get(
+        `
+        SELECT id, name, email, created_at
+        FROM users
+        WHERE id = ?
+        `,
+        [req.userId],
+        (err, user) => {
+
+            if (err) {
+                console.error(err);
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Database error."
+                });
+            }
+
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: "User not found."
+                });
+            }
+
+            return res.status(200).json({
+                success: true,
+                user
+            });
+        }
+    );
+});
+
+
+// =========================================
+// USER LOGOUT — TASK 4
+// =========================================
+
+app.post("/api/auth/logout", requireUser, (req, res) => {
+
+    const token = req.headers["x-auth-token"];
+
+    userTokens.delete(token);
+
+    return res.status(200).json({
+        success: true,
+        message: "Logged out successfully."
+    });
+});
+
+
+// =========================================
+// GET CONTENT — TASK 3
 // =========================================
 
 app.get("/api/content", requireAdmin, (req, res) => {
@@ -106,7 +374,6 @@ app.get("/api/content", requireAdmin, (req, res) => {
     db.all(sql, [], (err, rows) => {
 
         if (err) {
-
             console.error(err);
 
             return res.status(500).json({
@@ -124,7 +391,7 @@ app.get("/api/content", requireAdmin, (req, res) => {
 
 
 // =========================================
-// ADD CONTENT
+// ADD CONTENT — TASK 3
 // =========================================
 
 app.post("/api/content", requireAdmin, (req, res) => {
@@ -175,7 +442,6 @@ app.post("/api/content", requireAdmin, (req, res) => {
         function (err) {
 
             if (err) {
-
                 console.error(err);
 
                 return res.status(500).json({
@@ -195,7 +461,7 @@ app.post("/api/content", requireAdmin, (req, res) => {
 
 
 // =========================================
-// EDIT CONTENT
+// EDIT CONTENT — TASK 3
 // =========================================
 
 app.put("/api/content/:id", requireAdmin, (req, res) => {
@@ -249,7 +515,6 @@ app.put("/api/content/:id", requireAdmin, (req, res) => {
         function (err) {
 
             if (err) {
-
                 console.error(err);
 
                 return res.status(500).json({
@@ -276,7 +541,7 @@ app.put("/api/content/:id", requireAdmin, (req, res) => {
 
 
 // =========================================
-// DELETE CONTENT
+// DELETE CONTENT — TASK 3
 // =========================================
 
 app.delete("/api/content/:id", requireAdmin, (req, res) => {
@@ -291,7 +556,6 @@ app.delete("/api/content/:id", requireAdmin, (req, res) => {
     db.run(sql, [id], function (err) {
 
         if (err) {
-
             console.error(err);
 
             return res.status(500).json({
@@ -329,9 +593,6 @@ app.post("/api/contact", (req, res) => {
         message
     } = req.body;
 
-
-    // Required fields
-
     if (
         !name ||
         !email ||
@@ -345,16 +606,10 @@ app.post("/api/contact", (req, res) => {
         });
     }
 
-
-    // Remove unnecessary spaces
-
     const cleanName = name.trim();
     const cleanEmail = email.trim();
     const cleanSubject = subject.trim();
     const cleanMessage = message.trim();
-
-
-    // Check empty after trimming
 
     if (
         cleanName === "" ||
@@ -369,9 +624,6 @@ app.post("/api/contact", (req, res) => {
         });
     }
 
-
-    // Email validation
-
     const emailRegex =
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -382,9 +634,6 @@ app.post("/api/contact", (req, res) => {
             message: "Please enter a valid email address."
         });
     }
-
-
-    // Store in database
 
     const sql = `
         INSERT INTO inquiries
@@ -403,7 +652,6 @@ app.post("/api/contact", (req, res) => {
         function (err) {
 
             if (err) {
-
                 console.error(err);
 
                 return res.status(500).json({

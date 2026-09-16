@@ -38,5 +38,20 @@ db.run(`
         console.log("Content table is ready.");
     }
 });
+db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+`, (err) => {
+    if (err) {
+        console.error("Users table creation error:", err.message);
+    } else {
+        console.log("Users table is ready.");
+    }
+});
 
 module.exports = db;
