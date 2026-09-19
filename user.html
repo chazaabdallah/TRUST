@@ -10,39 +10,470 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>TRUST — My Account</title>
+    <title>TRUST — Customer Dashboard</title>
 
     <link rel="stylesheet" href="css/admin.css">
 
 </head>
 
-<body>
 
-    <main class="login-container">
-
-        <section class="login-card">
-
-            <p class="eyebrow">
-                TRUST — ACCOUNT
-            </p>
-
-            <h1>
-                Welcome
-            </h1>
-
-            <p id="userInfo">
-                Loading account...
-            </p>
+<body class="dashboard-body">
 
 
-            <button
-                id="logoutBtn"
-                class="login-btn"
+    <!-- =====================================
+         SIDEBAR
+    ====================================== -->
+
+    <aside class="dashboard-sidebar">
+
+        <div class="dashboard-brand">
+
+            <div class="brand-mark">
+                T
+            </div>
+
+            <div>
+                <strong>TRUST</strong>
+                <span>Customer Portal</span>
+            </div>
+
+        </div>
+
+
+        <nav class="dashboard-nav">
+
+            <a
+                href="#overview"
+                class="active"
             >
-                Logout
-            </button>
+                <span>⌂</span>
+                Overview
+            </a>
+
+            <a href="#profile">
+                <span>◯</span>
+                My Profile
+            </a>
+
+            <a href="#security">
+                <span>◈</span>
+                Security
+            </a>
+
+        </nav>
+
+
+        <button
+            id="logoutBtn"
+            class="dashboard-logout"
+        >
+            <span>↪</span>
+            Log Out
+        </button>
+
+    </aside>
+
+
+    <!-- =====================================
+         MAIN CONTENT
+    ====================================== -->
+
+    <main class="dashboard-main">
+
+
+        <!-- HEADER -->
+
+        <header class="dashboard-topbar">
+
+            <div>
+
+                <p class="dashboard-eyebrow">
+                    CUSTOMER DASHBOARD
+                </p>
+
+                <h1>
+                    Welcome back,
+                    <span id="headerName">Customer</span>
+                </h1>
+
+            </div>
+
+
+            <div class="user-avatar" id="userAvatar">
+                U
+            </div>
+
+        </header>
+
+
+        <!-- =====================================
+             OVERVIEW
+        ====================================== -->
+
+        <section id="overview">
+
+            <div class="welcome-card">
+
+                <div>
+
+                    <span class="status-badge">
+                        <span class="status-dot"></span>
+                        Account Active
+                    </span>
+
+                    <h2>
+                        Your TRUST account
+                    </h2>
+
+                    <p>
+                        Manage your account information
+                        and security settings from one place.
+                    </p>
+
+                </div>
+
+                <div class="welcome-decoration">
+                    TRUST
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-grid">
+
+
+                <!-- ACCOUNT INFO -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <span class="card-label">
+                                ACCOUNT
+                            </span>
+
+                            <h3>
+                                Account Information
+                            </h3>
+
+                        </div>
+
+                        <div class="card-icon">
+                            ◯
+                        </div>
+
+                    </div>
+
+
+                    <div class="account-info">
+
+                        <div class="info-row">
+
+                            <span>Name</span>
+
+                            <strong id="displayName">
+                                Loading...
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <span>Email</span>
+
+                            <strong id="displayEmail">
+                                Loading...
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <span>Member since</span>
+
+                            <strong id="displayDate">
+                                Loading...
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SECURITY STATUS -->
+
+                <div class="dashboard-card security-summary">
+
+                    <div class="card-header">
+
+                        <div>
+
+                            <span class="card-label">
+                                SECURITY
+                            </span>
+
+                            <h3>
+                                Account Protection
+                            </h3>
+
+                        </div>
+
+                        <div class="card-icon secure">
+                            ✓
+                        </div>
+
+                    </div>
+
+
+                    <div class="security-status">
+
+                        <div class="security-icon">
+                            ✓
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Authentication enabled
+                            </strong>
+
+                            <p>
+                                Your account is protected
+                                by secure authentication.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
 
         </section>
+
+
+        <!-- =====================================
+             PROFILE
+        ====================================== -->
+
+        <section
+            id="profile"
+            class="dashboard-section"
+        >
+
+            <div class="section-title">
+
+                <div>
+
+                    <span class="card-label">
+                        PROFILE
+                    </span>
+
+                    <h2>
+                        Personal Information
+                    </h2>
+
+                    <p>
+                        Update the information associated
+                        with your TRUST account.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+
+                <form id="profileForm">
+
+
+                    <div class="profile-form-grid">
+
+
+                        <div class="form-group">
+
+                            <label for="profileName">
+                                Full Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="profileName"
+                                placeholder="Your name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="profileEmail">
+                                Email Address
+                            </label>
+
+                            <input
+                                type="email"
+                                id="profileEmail"
+                                placeholder="Your email"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-actions">
+
+                        <button
+                            type="submit"
+                            id="saveProfileBtn"
+                            class="primary-btn"
+                        >
+                            Save Changes
+                        </button>
+
+                        <span
+                            id="profileMessage"
+                            class="form-feedback"
+                        ></span>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             SECURITY
+        ====================================== -->
+
+        <section
+            id="security"
+            class="dashboard-section"
+        >
+
+            <div class="section-title">
+
+                <div>
+
+                    <span class="card-label">
+                        SECURITY
+                    </span>
+
+                    <h2>
+                        Change Password
+                    </h2>
+
+                    <p>
+                        Keep your account secure by using
+                        a strong password.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <form id="passwordForm">
+
+
+                    <div class="password-grid">
+
+
+                        <div class="form-group">
+
+                            <label for="currentPassword">
+                                Current Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="currentPassword"
+                                placeholder="Enter current password"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="newPassword">
+                                New Password
+                            </label>
+
+                            <input
+                                type="password"
+                                id="newPassword"
+                                placeholder="Minimum 8 characters"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="password-note">
+
+                        <span>i</span>
+
+                        <p>
+                            Your password is securely hashed
+                            before being stored in the database.
+                        </p>
+
+                    </div>
+
+
+                    <div class="profile-actions">
+
+                        <button
+                            type="submit"
+                            class="primary-btn"
+                        >
+                            Update Password
+                        </button>
+
+                        <span
+                            id="passwordMessage"
+                            class="form-feedback"
+                        ></span>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <footer class="dashboard-footer">
+
+            <span>
+                TRUST Customer Portal
+            </span>
+
+            <span>
+                Secure account management
+            </span>
+
+        </footer>
 
     </main>
 

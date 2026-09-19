@@ -340,6 +340,204 @@ app.get("/api/auth/me", requireUser, (req, res) => {
         }
     );
 });
+// =========================================
+// UPDATE CUSTOMER ACCOUNT — TASK 5
+// =========================================
+
+app.put("/api/auth/me", requireUser, async (req, res) => {
+
+    const {
+        name,
+        email,
+        currentPassword,
+        newPassword
+    } = req.body;
+
+    // ==============================
+    // BASIC VALIDATION
+    // ==============================
+
+    if (!name || !email) {
+        return res.status(400).json({
+            success: false,
+            message: "Name and email are required."
+        });
+    }
+
+    const cleanName = name.trim();
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (cleanName === "" || cleanEmail === "") {
+        return res.status(400).json({
+            success: false,
+            message: "Name and email cannot be empty."
+        });
+    }
+
+    // ==============================
+    // EMAIL VALIDATION
+    // ==============================
+
+    const emailRegex =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(cleanEmail)) {
+        return res.status(400).json({
+            success: false,
+            message: "Please enter a valid email address."
+        });
+    }
+
+    // ==============================
+    // GET CURRENT USER
+    // ==============================
+
+    db.get(
+        `
+        SELECT id, name, email, password
+        FROM users
+        WHERE id = ?
+        `,
+        [req.userId],
+        async (err, user) => {
+
+            if (err) {
+                console.error(err);
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Database error."
+                });
+            }
+
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: "User not found."
+                });
+            }
+
+            // ==============================
+            // CHECK EMAIL AVAILABILITY
+            // ==============================
+
+            db.get(
+                `
+                SELECT id
+                FROM users
+                WHERE email = ?
+                AND id != ?
+                `,
+                [cleanEmail, req.userId],
+                async (emailErr, existingUser) => {
+
+                    if (emailErr) {
+                        console.error(emailErr);
+
+                        return res.status(500).json({
+                            success: false,
+                            message: "Database error."
+                        });
+                    }
+
+                    if (existingUser) {
+                        return res.status(409).json({
+                            success: false,
+                            message:
+                                "This email is already used by another account."
+                        });
+                    }
+
+                    // ==============================
+                    // PASSWORD UPDATE
+                    // ==============================
+
+                    let finalPassword = user.password;
+
+                    if (newPassword) {
+
+                        if (!currentPassword) {
+                            return res.status(400).json({
+                                success: false,
+                                message:
+                                    "Current password is required to change your password."
+                            });
+                        }
+
+                        if (newPassword.length < 8) {
+                            return res.status(400).json({
+                                success: false,
+                                message:
+                                    "New password must be at least 8 characters."
+                            });
+                        }
+
+                        const passwordMatch =
+                            await bcrypt.compare(
+                                currentPassword,
+                                user.password
+                            );
+
+                        if (!passwordMatch) {
+                            return res.status(401).json({
+                                success: false,
+                                message:
+                                    "Current password is incorrect."
+                            });
+                        }
+
+                        finalPassword =
+                            await bcrypt.hash(
+                                newPassword,
+                                12
+                            );
+                    }
+
+                    // ==============================
+                    // UPDATE DATABASE
+                    // ==============================
+
+                    db.run(
+                        `
+                        UPDATE users
+                        SET name = ?, email = ?, password = ?
+                        WHERE id = ?
+                        `,
+                        [
+                            cleanName,
+                            cleanEmail,
+                            finalPassword,
+                            req.userId
+                        ],
+                        function (updateErr) {
+
+                            if (updateErr) {
+                                console.error(updateErr);
+
+                                return res.status(500).json({
+                                    success: false,
+                                    message:
+                                        "Unable to update account."
+                                });
+                            }
+
+                            return res.status(200).json({
+                                success: true,
+                                message:
+                                    "Account updated successfully.",
+                                user: {
+                                    id: user.id,
+                                    name: cleanName,
+                                    email: cleanEmail
+                                }
+                            });
+                        }
+                    );
+                }
+            );
+        }
+    );
+});
 
 
 // =========================================
