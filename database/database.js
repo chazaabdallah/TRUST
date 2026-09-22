@@ -53,5 +53,20 @@ db.run(`
         console.log("Users table is ready.");
     }
 });
+db.run(`
+    CREATE TABLE IF NOT EXISTS services (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        description TEXT NOT NULL,
+        category TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+`, (err) => {
+    if (err) {
+        console.error("Services table creation error:", err.message);
+    } else {
+        console.log("Services table is ready.");
+    }
+});
 
 module.exports = db;

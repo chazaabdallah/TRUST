@@ -867,7 +867,208 @@ app.post("/api/contact", (req, res) => {
         }
     );
 });
+// ===============================
+// TASK 6 - SERVICE MANAGEMENT
+// ===============================
 
+app.get("/api/services", (req, res) => {
+
+    db.all(
+        `
+        SELECT id, name, description, category, created_at
+        FROM services
+        ORDER BY id DESC
+        `,
+        [],
+        (err, services) => {
+
+            if (err) {
+                console.error(err);
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Unable to retrieve services."
+                });
+            }
+
+            res.status(200).json({
+                success: true,
+                services
+            });
+        }
+    );
+});
+app.post("/api/services", requireAdmin, (req, res) => {
+
+    const {
+        name,
+        description,
+        category
+    } = req.body;
+
+    if (!name || !description || !category) {
+        return res.status(400).json({
+            success: false,
+            message: "Name, description and category are required."
+        });
+    }
+
+    const cleanName = name.trim();
+    const cleanDescription = description.trim();
+    const cleanCategory = category.trim();
+
+    if (
+        cleanName === "" ||
+        cleanDescription === "" ||
+        cleanCategory === ""
+    ) {
+        return res.status(400).json({
+            success: false,
+            message: "All service fields are required."
+        });
+    }
+
+    db.run(
+        `
+        INSERT INTO services
+        (name, description, category)
+        VALUES (?, ?, ?)
+        `,
+        [
+            cleanName,
+            cleanDescription,
+            cleanCategory
+        ],
+        function (err) {
+
+            if (err) {
+                console.error(err);
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Unable to create service."
+                });
+            }
+
+            res.status(201).json({
+                success: true,
+                message: "Service created successfully.",
+                service: {
+                    id: this.lastID,
+                    name: cleanName,
+                    description: cleanDescription,
+                    category: cleanCategory
+                }
+            });
+        }
+    );
+});
+app.put("/api/services/:id", requireAdmin, (req, res) => {
+
+    const serviceId = req.params.id;
+
+    const {
+        name,
+        description,
+        category
+    } = req.body;
+
+    if (!name || !description || !category) {
+        return res.status(400).json({
+            success: false,
+            message: "Name, description and category are required."
+        });
+    }
+
+    const cleanName = name.trim();
+    const cleanDescription = description.trim();
+    const cleanCategory = category.trim();
+
+    if (
+        cleanName === "" ||
+        cleanDescription === "" ||
+        cleanCategory === ""
+    ) {
+        return res.status(400).json({
+            success: false,
+            message: "All service fields are required."
+        });
+    }
+
+    db.run(
+        `
+        UPDATE services
+        SET name = ?,
+            description = ?,
+            category = ?
+        WHERE id = ?
+        `,
+        [
+            cleanName,
+            cleanDescription,
+            cleanCategory,
+            serviceId
+        ],
+        function (err) {
+
+            if (err) {
+                console.error(err);
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Unable to update service."
+                });
+            }
+
+            if (this.changes === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Service not found."
+                });
+            }
+
+            res.status(200).json({
+                success: true,
+                message: "Service updated successfully."
+            });
+        }
+    );
+});
+app.delete("/api/services/:id", requireAdmin, (req, res) => {
+
+    const serviceId = req.params.id;
+
+    db.run(
+        `
+        DELETE FROM services
+        WHERE id = ?
+        `,
+        [serviceId],
+        function (err) {
+
+            if (err) {
+                console.error(err);
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Unable to delete service."
+                });
+            }
+
+            if (this.changes === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Service not found."
+                });
+            }
+
+            res.status(200).json({
+                success: true,
+                message: "Service deleted successfully."
+            });
+        }
+    );
+});
 
 // =========================================
 // START SERVER

@@ -26,6 +26,10 @@
     padding: 0;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     min-height: 100vh;
     background:
@@ -35,11 +39,8 @@ body {
             transparent 30%
         ),
         var(--bg);
-
     color: var(--text);
-
     font-family: "DM Sans", sans-serif;
-
     line-height: 1.6;
 }
 
@@ -70,80 +71,51 @@ a:hover {
 
 .login-container {
     min-height: 100vh;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 40px 20px;
-
     position: relative;
 }
 
-
-/* Decorative background */
-
 .login-container::before {
     content: "";
-
     position: fixed;
-
     width: 420px;
     height: 420px;
-
     border-radius: 50%;
-
     background: rgba(29, 78, 216, 0.05);
-
     top: -160px;
     right: -120px;
-
     pointer-events: none;
 }
 
 .login-container::after {
     content: "";
-
     position: fixed;
-
     width: 300px;
     height: 300px;
-
     border-radius: 50%;
-
     background: rgba(45, 138, 85, 0.035);
-
     bottom: -130px;
     left: -100px;
-
     pointer-events: none;
 }
-
-
-/* Card */
 
 .login-card {
     width: 100%;
     max-width: 460px;
-
     background: var(--surface);
-
     border: 1px solid var(--border);
-
     border-radius: 24px;
-
     padding: 46px;
-
     box-shadow: var(--shadow);
-
     position: relative;
     z-index: 1;
-
     animation: cardAppear 0.45s ease;
 }
 
 @keyframes cardAppear {
-
     from {
         opacity: 0;
         transform: translateY(12px);
@@ -155,38 +127,25 @@ a:hover {
     }
 }
 
-
-/* Brand */
-
 .eyebrow {
     font-size: 11px;
-
     letter-spacing: 2px;
-
     font-weight: 700;
-
     color: var(--primary);
-
     margin-bottom: 10px;
 }
 
 .login-card h1 {
     font-family: "Playfair Display", serif;
-
     font-size: 38px;
-
     line-height: 1.15;
-
     margin-bottom: 10px;
-
     letter-spacing: -0.5px;
 }
 
 .login-description {
     color: var(--muted);
-
     font-size: 15px;
-
     margin-bottom: 30px;
 }
 
@@ -201,34 +160,22 @@ a:hover {
 
 .form-group label {
     display: block;
-
     font-size: 13px;
-
     font-weight: 600;
-
     margin-bottom: 8px;
-
     color: #34383e;
 }
 
 .form-group input,
 .form-group textarea {
     width: 100%;
-
     border: 1px solid var(--border);
-
     background: var(--surface-soft);
-
     border-radius: 11px;
-
     padding: 13px 15px;
-
     font-size: 14px;
-
     color: var(--text);
-
     outline: none;
-
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease,
@@ -239,12 +186,15 @@ a:hover {
     height: 48px;
 }
 
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
 .form-group input:focus,
 .form-group textarea:focus {
     background: white;
-
     border-color: var(--primary);
-
     box-shadow:
         0 0 0 4px rgba(29, 78, 216, 0.08);
 }
@@ -262,21 +212,13 @@ a:hover {
 .login-btn,
 #saveBtn {
     width: 100%;
-
     height: 50px;
-
     border: none;
-
     border-radius: 11px;
-
     background: var(--primary);
-
     color: white;
-
     font-size: 14px;
-
     font-weight: 700;
-
     transition:
         background 0.2s ease,
         transform 0.2s ease,
@@ -286,9 +228,7 @@ a:hover {
 .login-btn:hover,
 #saveBtn:hover {
     background: var(--primary-dark);
-
     transform: translateY(-1px);
-
     box-shadow:
         0 8px 20px rgba(29, 78, 216, 0.18);
 }
@@ -299,30 +239,42 @@ a:hover {
 }
 
 
-/* Messages */
+/* =========================================
+   MESSAGES
+========================================= */
 
 #loginMessage,
 #registerMessage,
 #formMessage {
     min-height: 22px;
-
     margin-top: 14px;
-
     font-size: 13px;
-
     font-weight: 600;
 }
 
+.form-message {
+    margin-top: 15px;
+    font-size: 14px;
+    min-height: 20px;
+}
 
-/* Bottom text */
+.form-message.success {
+    color: #208a55;
+}
+
+.form-message.error {
+    color: #c62828;
+}
+
+
+/* =========================================
+   BOTTOM TEXT
+========================================= */
 
 .login-card > p:last-child {
     margin-top: 24px;
-
     text-align: center;
-
     color: var(--muted);
-
     font-size: 13px;
 }
 
@@ -333,57 +285,37 @@ a:hover {
 
 .admin-header {
     min-height: 90px;
-
     background: white;
-
     border-bottom: 1px solid var(--border);
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     padding: 20px 6vw;
-
     position: sticky;
-
     top: 0;
-
     z-index: 10;
 }
 
 .admin-header h1 {
     font-family: "Playfair Display", serif;
-
     font-size: 30px;
-
     line-height: 1.1;
 }
 
 .logout-btn {
     border: 1px solid var(--border);
-
     background: white;
-
     color: var(--text);
-
     padding: 10px 18px;
-
     border-radius: 9px;
-
     font-size: 13px;
-
     font-weight: 600;
-
     transition: 0.2s ease;
 }
 
 .logout-btn:hover {
     border-color: var(--danger);
-
     color: var(--danger);
-
     background: #fff8f8;
 }
 
@@ -392,16 +324,26 @@ a:hover {
    ADMIN CONTAINER
 ========================================= */
 
+/*
+   IMPORTANT TASK 6 FIX:
+   The container has two columns.
+   Content form = column 1
+   Existing content = column 2
+   Service management = full width row 2
+*/
+
 .admin-container {
     max-width: 1250px;
-
     margin: 0 auto;
-
     padding: 55px 25px 80px;
 
     display: grid;
 
-    grid-template-columns: 420px 1fr;
+    grid-template-columns:
+        minmax(320px, 420px)
+        minmax(0, 1fr);
+
+    grid-template-rows: auto auto;
 
     gap: 30px;
 
@@ -409,30 +351,45 @@ a:hover {
 }
 
 
-/* Sections */
+/* =========================================
+   CONTENT SECTIONS
+========================================= */
 
 .content-form-section,
 .content-list-section {
     background: white;
-
     border: 1px solid var(--border);
-
     border-radius: var(--radius);
-
     padding: 30px;
-
     box-shadow:
         0 8px 30px rgba(20, 25, 35, 0.04);
 }
 
-.content-form-section {
-    position: sticky;
 
-    top: 120px;
+/*
+   IMPORTANT:
+   Do NOT use position: sticky here.
+   Otherwise the content form stays visible
+   while scrolling into Service Management.
+*/
+
+.content-form-section {
+    grid-column: 1;
+    grid-row: 1;
+    position: static;
+    align-self: start;
+}
+
+.content-list-section {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
 }
 
 
-/* Section heading */
+/* =========================================
+   SECTION HEADING
+========================================= */
 
 .section-heading {
     margin-bottom: 28px;
@@ -440,9 +397,7 @@ a:hover {
 
 .section-heading h2 {
     font-family: "Playfair Display", serif;
-
     font-size: 27px;
-
     line-height: 1.2;
 }
 
@@ -453,9 +408,7 @@ a:hover {
 
 .form-actions {
     display: flex;
-
     gap: 10px;
-
     margin-top: 25px;
 }
 
@@ -465,17 +418,11 @@ a:hover {
 
 .cancel-btn {
     height: 50px;
-
     padding: 0 18px;
-
     border: 1px solid var(--border);
-
     border-radius: 11px;
-
     background: white;
-
     color: var(--text);
-
     font-weight: 600;
 }
 
@@ -490,21 +437,15 @@ a:hover {
 
 #contentList {
     display: flex;
-
     flex-direction: column;
-
     gap: 15px;
 }
 
 .content-item {
     border: 1px solid var(--border);
-
     border-radius: 14px;
-
     padding: 22px;
-
     background: var(--surface-soft);
-
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease,
@@ -513,52 +454,37 @@ a:hover {
 
 .content-item:hover {
     transform: translateY(-2px);
-
     border-color: #d5d9df;
-
     box-shadow:
         0 10px 25px rgba(20, 25, 35, 0.06);
 }
 
 .content-item-header {
     display: flex;
-
     justify-content: space-between;
-
     align-items: flex-start;
-
     margin-bottom: 12px;
 }
 
 .content-item h3 {
     font-size: 17px;
-
     font-weight: 700;
-
     margin-bottom: 5px;
 }
 
 .content-item > p {
     color: var(--muted);
-
     font-size: 14px;
-
     margin-bottom: 18px;
 }
 
 .content-category {
     display: inline-flex;
-
     padding: 4px 9px;
-
     border-radius: 20px;
-
     background: #eaf0ff;
-
     color: var(--primary);
-
     font-size: 11px;
-
     font-weight: 700;
 }
 
@@ -569,32 +495,23 @@ a:hover {
 
 .content-actions {
     display: flex;
-
     gap: 8px;
-
     padding-top: 15px;
-
     border-top: 1px solid var(--border);
 }
 
 .edit-btn,
 .delete-btn {
     border: none;
-
     padding: 9px 15px;
-
     border-radius: 8px;
-
     font-size: 12px;
-
     font-weight: 700;
-
     transition: 0.2s ease;
 }
 
 .edit-btn {
     background: #eaf0ff;
-
     color: var(--primary);
 }
 
@@ -604,7 +521,6 @@ a:hover {
 
 .delete-btn {
     background: #fff0f0;
-
     color: var(--danger);
 }
 
@@ -620,12 +536,269 @@ a:hover {
 .empty-message,
 .loading {
     text-align: center;
-
     color: var(--muted);
-
     padding: 40px 20px;
-
     font-size: 14px;
+}
+
+.empty-state {
+    padding: 35px;
+    text-align: center;
+    border: 1px dashed #ddd;
+    border-radius: 15px;
+    color: #777;
+}
+
+
+/* =========================================
+   TASK 6 — SERVICE MANAGEMENT
+========================================= */
+
+/*
+   IMPORTANT:
+   This section occupies BOTH columns.
+   It is always BELOW Content Management.
+*/
+
+.admin-container > .admin-section {
+    grid-column: 1 / -1;
+    grid-row: 2;
+
+    width: 100%;
+
+    margin-top: 0;
+
+    align-self: start;
+
+    min-width: 0;
+}
+
+.admin-section {
+    width: 100%;
+}
+
+.section-header {
+    margin-bottom: 24px;
+}
+
+.section-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #3155d9;
+    margin-bottom: 8px;
+}
+
+.section-header h2,
+.section-header h3 {
+    margin: 0 0 8px;
+}
+
+.section-header h2 {
+    font-family: "Playfair Display", serif;
+    font-size: 27px;
+}
+
+.section-header h3 {
+    font-size: 20px;
+}
+
+.section-header p {
+    color: #777;
+    margin: 0;
+}
+
+
+/* =========================================
+   SERVICE FORM
+========================================= */
+
+.admin-form {
+    background: #ffffff;
+    border: 1px solid #e8e8e8;
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 35px;
+    width: 100%;
+}
+
+.admin-form .form-group {
+    margin-bottom: 20px;
+}
+
+.admin-form .form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.admin-form .form-group input,
+.admin-form .form-group textarea {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+    background: white;
+}
+
+.admin-form .form-group input {
+    height: 48px;
+}
+
+.admin-form .form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.admin-form .form-group input:focus,
+.admin-form .form-group textarea:focus {
+    border-color: #3155d9;
+    box-shadow:
+        0 0 0 4px rgba(49, 85, 217, 0.07);
+}
+
+.admin-form .form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+
+/* =========================================
+   SERVICE BUTTONS
+========================================= */
+
+.admin-form .primary-btn,
+.admin-form .secondary-btn,
+.edit-service-btn,
+.delete-service-btn {
+    border: none;
+    border-radius: 9px;
+    padding: 11px 18px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.admin-form .primary-btn {
+    background: #111827;
+    color: white;
+}
+
+.admin-form .primary-btn:hover {
+    background: #252c38;
+}
+
+.admin-form .secondary-btn {
+    background: #eeeeee;
+    color: #222;
+}
+
+.admin-form .secondary-btn:hover {
+    background: #e2e2e2;
+}
+
+
+/* =========================================
+   SERVICES LIST
+========================================= */
+
+.services-management {
+    width: 100%;
+}
+
+.services-management .section-header {
+    margin-bottom: 18px;
+}
+
+.services-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    width: 100%;
+}
+
+.service-management-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+
+    background: white;
+    border: 1px solid #e8e8e8;
+    border-radius: 16px;
+    padding: 22px;
+
+    width: 100%;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.service-management-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 25px rgba(20, 25, 35, 0.06);
+}
+
+.service-card-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.service-category {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #3155d9;
+    margin-bottom: 8px;
+}
+
+.service-card-content h3 {
+    margin: 0 0 7px;
+    font-size: 19px;
+}
+
+.service-card-content p {
+    margin: 0;
+    color: #666;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.service-card-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.edit-service-btn {
+    background: #edf1ff;
+    color: #3155d9;
+}
+
+.edit-service-btn:hover {
+    background: #dce5ff;
+}
+
+.delete-service-btn {
+    background: #fff0f0;
+    color: #c62828;
+}
+
+.delete-service-btn:hover {
+    background: #ffe0e0;
 }
 
 
@@ -635,50 +808,567 @@ a:hover {
 
 .login-card #userInfo {
     background: var(--surface-soft);
-
     border: 1px solid var(--border);
-
     border-radius: 13px;
-
     padding: 20px;
-
     margin: 25px 0;
-
     color: var(--muted);
-
     font-size: 15px;
-
     line-height: 2;
 }
 
 .login-card #userInfo strong {
     color: var(--text);
-
     font-size: 20px;
 }
 
 
 /* =========================================
-   RESPONSIVE
+   CUSTOMER DASHBOARD — TASK 5
+========================================= */
+
+.dashboard-body {
+    background: #f5f6f8;
+    display: flex;
+    min-height: 100vh;
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.dashboard-sidebar {
+    width: 245px;
+    min-height: 100vh;
+    background: #111318;
+    color: white;
+    padding: 28px 18px;
+
+    display: flex;
+    flex-direction: column;
+
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    z-index: 20;
+}
+
+.dashboard-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 5px 10px 35px;
+    border-bottom: 1px solid #292c32;
+}
+
+.brand-mark {
+    width: 37px;
+    height: 37px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+    background: #1d4ed8;
+
+    font-family: "Playfair Display", serif;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.dashboard-brand strong {
+    display: block;
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+.dashboard-brand span {
+    display: block;
+    color: #858b94;
+    font-size: 10px;
+    margin-top: 1px;
+}
+
+.dashboard-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 30px;
+}
+
+.dashboard-nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 13px;
+    border-radius: 9px;
+    color: #aeb3bc;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.dashboard-nav a:hover,
+.dashboard-nav a.active {
+    background: #1d2129;
+    color: white;
+    text-decoration: none;
+}
+
+.dashboard-nav a.active {
+    box-shadow:
+        inset 3px 0 0 #4c7df5;
+}
+
+.dashboard-nav a span {
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.dashboard-logout {
+    margin-top: auto;
+    width: 100%;
+    border: 1px solid #30343c;
+    background: transparent;
+    color: #aeb3bc;
+    border-radius: 9px;
+    padding: 11px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.dashboard-logout:hover {
+    background: #21191a;
+    border-color: #633436;
+    color: #ff9b9b;
+}
+
+
+/* =========================================
+   DASHBOARD MAIN
+========================================= */
+
+.dashboard-main {
+    margin-left: 245px;
+    width: calc(100% - 245px);
+    max-width: 1450px;
+    padding: 0 5vw 50px;
+}
+
+
+/* =========================================
+   TOPBAR
+========================================= */
+
+.dashboard-topbar {
+    min-height: 125px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e3e6ea;
+    margin-bottom: 35px;
+}
+
+.dashboard-eyebrow {
+    color: #1d4ed8;
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.dashboard-topbar h1 {
+    font-family: "Playfair Display", serif;
+    font-size: 30px;
+    letter-spacing: -0.4px;
+}
+
+.user-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #e7edff;
+    color: #1d4ed8;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   WELCOME CARD
+========================================= */
+
+.welcome-card {
+    min-height: 190px;
+    border-radius: 20px;
+    background: #161a22;
+    color: white;
+    padding: 32px 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.welcome-card::after {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border: 1px solid #333944;
+    border-radius: 50%;
+    right: -80px;
+    top: -80px;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #202a24;
+    color: #8fd5aa;
+    border: 1px solid #304436;
+    border-radius: 30px;
+    padding: 5px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    margin-bottom: 17px;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #5fc77f;
+}
+
+.welcome-card h2 {
+    font-family: "Playfair Display", serif;
+    font-size: 29px;
+    margin-bottom: 7px;
+}
+
+.welcome-card p {
+    color: #9da3ad;
+    font-size: 13px;
+    max-width: 510px;
+}
+
+.welcome-decoration {
+    font-family: "Playfair Display", serif;
+    font-size: 75px;
+    font-weight: 700;
+    color: #242934;
+    letter-spacing: -4px;
+    z-index: 1;
+}
+
+
+/* =========================================
+   DASHBOARD GRID
+========================================= */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.dashboard-card {
+    background: white;
+    border: 1px solid #e2e5e9;
+    border-radius: 17px;
+    padding: 27px;
+    box-shadow:
+        0 7px 25px rgba(20, 25, 35, 0.035);
+}
+
+.card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eceef1;
+    margin-bottom: 5px;
+}
+
+.card-label {
+    display: block;
+    color: #7c828b;
+    font-size: 9px;
+    letter-spacing: 1.7px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.card-header h3 {
+    font-size: 17px;
+}
+
+.card-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 9px;
+    background: #f0f3f8;
+    color: #56606d;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 700;
+}
+
+.card-icon.secure {
+    background: #eaf7ef;
+    color: #2d8a55;
+}
+
+
+/* =========================================
+   ACCOUNT INFO
+========================================= */
+
+.account-info {
+    padding-top: 10px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 0;
+    border-bottom: 1px solid #f0f1f3;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row span {
+    color: #858b94;
+    font-size: 12px;
+}
+
+.info-row strong {
+    color: #25282d;
+    font-size: 13px;
+    max-width: 60%;
+    text-align: right;
+    word-break: break-word;
+}
+
+
+/* =========================================
+   SECURITY SUMMARY
+========================================= */
+
+.security-status {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 23px 0 10px;
+}
+
+.security-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 50%;
+    background: #eaf7ef;
+    color: #2d8a55;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 800;
+}
+
+.security-status strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.security-status p {
+    color: #858b94;
+    font-size: 12px;
+}
+
+
+/* =========================================
+   DASHBOARD SECTIONS
+========================================= */
+
+.dashboard-section {
+    margin-top: 45px;
+}
+
+.section-title {
+    margin-bottom: 18px;
+}
+
+.section-title h2 {
+    font-family: "Playfair Display", serif;
+    font-size: 25px;
+    margin-bottom: 3px;
+}
+
+.section-title p {
+    color: #7b818a;
+    font-size: 12px;
+}
+
+
+/* =========================================
+   PROFILE FORM
+========================================= */
+
+.profile-form-grid,
+.password-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.profile-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.primary-btn {
+    border: none;
+    background: #1d4ed8;
+    color: white;
+    border-radius: 9px;
+    padding: 11px 19px;
+    font-size: 12px;
+    font-weight: 700;
+    transition: 0.2s ease;
+}
+
+.primary-btn:hover {
+    background: #173ea8;
+    transform: translateY(-1px);
+}
+
+.form-feedback {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.form-feedback.success {
+    color: #2d8a55;
+}
+
+.form-feedback.error {
+    color: #d64545;
+}
+
+
+/* =========================================
+   PASSWORD
+========================================= */
+
+.password-note {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    background: #f6f8fb;
+    border: 1px solid #e7eaf0;
+    border-radius: 9px;
+    padding: 11px 13px;
+    margin-top: 5px;
+}
+
+.password-note span {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #e4e9f2;
+    color: #536071;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.password-note p {
+    color: #737a84;
+    font-size: 11px;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.dashboard-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 35px 5px 0;
+    color: #9298a0;
+    font-size: 10px;
+}
+
+
+/* =========================================
+   RESPONSIVE — ADMIN
 ========================================= */
 
 @media (max-width: 900px) {
 
     .admin-container {
         grid-template-columns: 1fr;
+        grid-template-rows: auto;
     }
 
     .content-form-section {
+        grid-column: 1;
+        grid-row: auto;
         position: static;
+    }
+
+    .content-list-section {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .admin-container > .admin-section {
+        grid-column: 1;
+        grid-row: auto;
     }
 }
 
+
+/* =========================================
+   RESPONSIVE — GENERAL
+========================================= */
 
 @media (max-width: 600px) {
 
     .login-card {
         padding: 30px 22px;
-
         border-radius: 18px;
     }
 
@@ -706,713 +1396,32 @@ a:hover {
     .content-list-section {
         padding: 22px 18px;
     }
-}
-/* =========================================
-   CUSTOMER DASHBOARD — TASK 5
-========================================= */
 
-.dashboard-body {
-    background: #f5f6f8;
-    display: flex;
-    min-height: 100vh;
-}
-
-
-/* =========================================
-   SIDEBAR
-========================================= */
-
-.dashboard-sidebar {
-    width: 245px;
-    min-height: 100vh;
-
-    background: #111318;
-    color: white;
-
-    padding: 28px 18px;
-
-    display: flex;
-    flex-direction: column;
-
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-
-    z-index: 20;
-}
-
-
-.dashboard-brand {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-
-    padding: 5px 10px 35px;
-
-    border-bottom: 1px solid #292c32;
-}
-
-
-.brand-mark {
-    width: 37px;
-    height: 37px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 10px;
-
-    background: #1d4ed8;
-
-    font-family: "Playfair Display", serif;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-
-.dashboard-brand strong {
-    display: block;
-
-    font-size: 16px;
-    letter-spacing: 1px;
-}
-
-
-.dashboard-brand span {
-    display: block;
-
-    color: #858b94;
-
-    font-size: 10px;
-
-    margin-top: 1px;
-}
-
-
-.dashboard-nav {
-    display: flex;
-    flex-direction: column;
-
-    gap: 5px;
-
-    margin-top: 30px;
-}
-
-
-.dashboard-nav a {
-    display: flex;
-    align-items: center;
-
-    gap: 12px;
-
-    padding: 12px 13px;
-
-    border-radius: 9px;
-
-    color: #aeb3bc;
-
-    font-size: 13px;
-
-    font-weight: 600;
-
-    transition: 0.2s ease;
-}
-
-
-.dashboard-nav a:hover,
-.dashboard-nav a.active {
-    background: #1d2129;
-
-    color: white;
-
-    text-decoration: none;
-}
-
-
-.dashboard-nav a.active {
-    box-shadow:
-        inset 3px 0 0 #4c7df5;
-}
-
-
-.dashboard-nav a span {
-    width: 20px;
-
-    text-align: center;
-
-    font-size: 16px;
-}
-
-
-.dashboard-logout {
-    margin-top: auto;
-
-    width: 100%;
-
-    border: 1px solid #30343c;
-
-    background: transparent;
-
-    color: #aeb3bc;
-
-    border-radius: 9px;
-
-    padding: 11px;
-
-    font-size: 13px;
-
-    font-weight: 600;
-
-    transition: 0.2s ease;
-}
-
-
-.dashboard-logout:hover {
-    background: #21191a;
-
-    border-color: #633436;
-
-    color: #ff9b9b;
+    .admin-form {
+        padding: 22px 18px;
+    }
+
+    .service-management-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .service-card-actions {
+        width: 100%;
+    }
+
+    .service-card-actions button {
+        flex: 1;
+    }
+
+    .admin-form .form-actions {
+        flex-wrap: wrap;
+    }
 }
 
 
 /* =========================================
-   MAIN
-========================================= */
-
-.dashboard-main {
-    margin-left: 245px;
-
-    width: calc(100% - 245px);
-
-    max-width: 1450px;
-
-    padding: 0 5vw 50px;
-}
-
-
-/* =========================================
-   TOPBAR
-========================================= */
-
-.dashboard-topbar {
-    min-height: 125px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    border-bottom: 1px solid #e3e6ea;
-
-    margin-bottom: 35px;
-}
-
-
-.dashboard-eyebrow {
-    color: #1d4ed8;
-
-    font-size: 10px;
-
-    letter-spacing: 2px;
-
-    font-weight: 700;
-
-    margin-bottom: 6px;
-}
-
-
-.dashboard-topbar h1 {
-    font-family: "Playfair Display", serif;
-
-    font-size: 30px;
-
-    letter-spacing: -0.4px;
-}
-
-
-.user-avatar {
-    width: 45px;
-    height: 45px;
-
-    border-radius: 50%;
-
-    background: #e7edff;
-
-    color: #1d4ed8;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 16px;
-
-    font-weight: 700;
-}
-
-
-/* =========================================
-   WELCOME CARD
-========================================= */
-
-.welcome-card {
-    min-height: 190px;
-
-    border-radius: 20px;
-
-    background: #161a22;
-
-    color: white;
-
-    padding: 32px 36px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    overflow: hidden;
-
-    position: relative;
-
-    margin-bottom: 25px;
-}
-
-
-.welcome-card::after {
-    content: "";
-
-    position: absolute;
-
-    width: 300px;
-    height: 300px;
-
-    border: 1px solid #333944;
-
-    border-radius: 50%;
-
-    right: -80px;
-    top: -80px;
-}
-
-
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-
-    gap: 7px;
-
-    background: #202a24;
-
-    color: #8fd5aa;
-
-    border: 1px solid #304436;
-
-    border-radius: 30px;
-
-    padding: 5px 10px;
-
-    font-size: 10px;
-
-    font-weight: 700;
-
-    margin-bottom: 17px;
-}
-
-
-.status-dot {
-    width: 6px;
-    height: 6px;
-
-    border-radius: 50%;
-
-    background: #5fc77f;
-}
-
-
-.welcome-card h2 {
-    font-family: "Playfair Display", serif;
-
-    font-size: 29px;
-
-    margin-bottom: 7px;
-}
-
-
-.welcome-card p {
-    color: #9da3ad;
-
-    font-size: 13px;
-
-    max-width: 510px;
-}
-
-
-.welcome-decoration {
-    font-family: "Playfair Display", serif;
-
-    font-size: 75px;
-
-    font-weight: 700;
-
-    color: #242934;
-
-    letter-spacing: -4px;
-
-    z-index: 1;
-}
-
-
-/* =========================================
-   DASHBOARD GRID
-========================================= */
-
-.dashboard-grid {
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 20px;
-}
-
-
-.dashboard-card {
-    background: white;
-
-    border: 1px solid #e2e5e9;
-
-    border-radius: 17px;
-
-    padding: 27px;
-
-    box-shadow:
-        0 7px 25px rgba(20, 25, 35, 0.035);
-}
-
-
-.card-header {
-    display: flex;
-
-    align-items: flex-start;
-
-    justify-content: space-between;
-
-    padding-bottom: 20px;
-
-    border-bottom: 1px solid #eceef1;
-
-    margin-bottom: 5px;
-}
-
-
-.card-label {
-    display: block;
-
-    color: #7c828b;
-
-    font-size: 9px;
-
-    letter-spacing: 1.7px;
-
-    font-weight: 700;
-
-    margin-bottom: 5px;
-}
-
-
-.card-header h3 {
-    font-size: 17px;
-}
-
-
-.card-icon {
-    width: 35px;
-    height: 35px;
-
-    border-radius: 9px;
-
-    background: #f0f3f8;
-
-    color: #56606d;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-weight: 700;
-}
-
-
-.card-icon.secure {
-    background: #eaf7ef;
-
-    color: #2d8a55;
-}
-
-
-/* =========================================
-   ACCOUNT INFO
-========================================= */
-
-.account-info {
-    padding-top: 10px;
-}
-
-
-.info-row {
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    padding: 13px 0;
-
-    border-bottom: 1px solid #f0f1f3;
-}
-
-
-.info-row:last-child {
-    border-bottom: none;
-}
-
-
-.info-row span {
-    color: #858b94;
-
-    font-size: 12px;
-}
-
-
-.info-row strong {
-    color: #25282d;
-
-    font-size: 13px;
-
-    max-width: 60%;
-
-    text-align: right;
-
-    word-break: break-word;
-}
-
-
-/* =========================================
-   SECURITY SUMMARY
-========================================= */
-
-.security-status {
-    display: flex;
-
-    align-items: center;
-
-    gap: 15px;
-
-    padding: 23px 0 10px;
-}
-
-
-.security-icon {
-    width: 43px;
-    height: 43px;
-
-    border-radius: 50%;
-
-    background: #eaf7ef;
-
-    color: #2d8a55;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-weight: 800;
-}
-
-
-.security-status strong {
-    display: block;
-
-    font-size: 13px;
-
-    margin-bottom: 4px;
-}
-
-
-.security-status p {
-    color: #858b94;
-
-    font-size: 12px;
-}
-
-
-/* =========================================
-   SECTIONS
-========================================= */
-
-.dashboard-section {
-    margin-top: 45px;
-}
-
-
-.section-title {
-    margin-bottom: 18px;
-}
-
-
-.section-title h2 {
-    font-family: "Playfair Display", serif;
-
-    font-size: 25px;
-
-    margin-bottom: 3px;
-}
-
-
-.section-title p {
-    color: #7b818a;
-
-    font-size: 12px;
-}
-
-
-/* =========================================
-   PROFILE FORM
-========================================= */
-
-.profile-form-grid,
-.password-grid {
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 20px;
-}
-
-
-.profile-actions {
-    display: flex;
-
-    align-items: center;
-
-    gap: 15px;
-
-    margin-top: 10px;
-}
-
-
-.primary-btn {
-    border: none;
-
-    background: #1d4ed8;
-
-    color: white;
-
-    border-radius: 9px;
-
-    padding: 11px 19px;
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    transition: 0.2s ease;
-}
-
-
-.primary-btn:hover {
-    background: #173ea8;
-
-    transform: translateY(-1px);
-}
-
-
-.form-feedback {
-    font-size: 12px;
-
-    font-weight: 600;
-}
-
-
-.form-feedback.success {
-    color: #2d8a55;
-}
-
-
-.form-feedback.error {
-    color: #d64545;
-}
-
-
-/* =========================================
-   PASSWORD
-========================================= */
-
-.password-note {
-    display: flex;
-
-    gap: 9px;
-
-    align-items: center;
-
-    background: #f6f8fb;
-
-    border: 1px solid #e7eaf0;
-
-    border-radius: 9px;
-
-    padding: 11px 13px;
-
-    margin-top: 5px;
-}
-
-
-.password-note span {
-    width: 18px;
-    height: 18px;
-
-    border-radius: 50%;
-
-    background: #e4e9f2;
-
-    color: #536071;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 10px;
-
-    font-weight: 700;
-}
-
-
-.password-note p {
-    color: #737a84;
-
-    font-size: 11px;
-}
-
-
-/* =========================================
-   FOOTER
-========================================= */
-
-.dashboard-footer {
-    display: flex;
-
-    justify-content: space-between;
-
-    padding: 35px 5px 0;
-
-    color: #9298a0;
-
-    font-size: 10px;
-}
-
-
-/* =========================================
-   RESPONSIVE
+   RESPONSIVE — CUSTOMER DASHBOARD
 ========================================= */
 
 @media (max-width: 950px) {
@@ -1423,9 +1432,7 @@ a:hover {
 
     .dashboard-main {
         margin-left: 210px;
-
         width: calc(100% - 210px);
-
         padding-left: 25px;
         padding-right: 25px;
     }
@@ -1444,22 +1451,16 @@ a:hover {
 
     .dashboard-sidebar {
         position: static;
-
         width: 100%;
         min-height: auto;
-
         padding: 15px;
-
         flex-direction: row;
-
         align-items: center;
     }
 
     .dashboard-brand {
         border: none;
-
         padding: 0;
-
         flex: 1;
     }
 
@@ -1469,17 +1470,13 @@ a:hover {
 
     .dashboard-logout {
         width: auto;
-
         margin: 0;
-
         padding: 8px 12px;
     }
 
     .dashboard-main {
         margin-left: 0;
-
         width: 100%;
-
         padding: 0 15px 40px;
     }
 
@@ -1493,7 +1490,6 @@ a:hover {
 
     .welcome-card {
         padding: 25px;
-
         min-height: 170px;
     }
 
@@ -1512,7 +1508,6 @@ a:hover {
 
     .dashboard-footer {
         flex-direction: column;
-
         gap: 5px;
     }
 }

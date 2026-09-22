@@ -332,6 +332,7 @@ function analyzeText(text) {
         });
 
     }
+
     else if (hasLink) {
 
         riskScore += 8;
@@ -532,11 +533,13 @@ function analyzeText(text) {
         riskLevel = "High risk";
 
     }
+
     else if (riskScore >= 30) {
 
         riskLevel = "Medium risk";
 
     }
+
     else {
 
         riskLevel = "Low risk";
@@ -593,12 +596,14 @@ function updateResult(score, level, findings) {
         scoreNumber.style.color = "#e38d43";
 
     }
+
     else if (score >= 30) {
 
         resultTitle.style.color = "#e6b45d";
         scoreNumber.style.color = "#e6b45d";
 
     }
+
     else {
 
         resultTitle.style.color = "#65bf99";
@@ -661,12 +666,14 @@ function updateResult(score, level, findings) {
             "Don't click or pay. Verify through the organization's official website or app.";
 
     }
+
     else if (score >= 30) {
 
         recommendation.textContent =
             "Pause before acting. Verify the sender, link, and request through another channel.";
 
     }
+
     else {
 
         recommendation.textContent =
@@ -852,7 +859,12 @@ const riskCard =
     document.querySelector(".risk-card");
 
 
-if (window.innerWidth > 760) {
+if (
+    window.innerWidth > 760 &&
+    heroVisual &&
+    messageCard &&
+    riskCard
+) {
 
     heroVisual.addEventListener(
         "mousemove",
@@ -900,149 +912,182 @@ if (window.innerWidth > 760) {
 
 
 /* =========================================
-   INITIALIZE
+   TASK 6 - PUBLIC SERVICES
 ========================================= */
 
-updateCharacterCount();
-/* =========================================
-   CONTACT FORM
-========================================= */
+async function loadPublicServices() {
 
-const contactForm =
-    document.getElementById("contactForm");
-
-const contactSubmit =
-    document.getElementById("contactSubmit");
-
-const formFeedback =
-    document.getElementById("formFeedback");
+    const servicesContainer =
+        document.getElementById("publicServices");
 
 
-contactForm.addEventListener("submit", async (event) => {
+    if (!servicesContainer) {
 
-    event.preventDefault();
-
-
-    const name =
-        document.getElementById("name").value.trim();
-
-    const email =
-        document.getElementById("email").value.trim();
-
-    const subject =
-        document.getElementById("subject").value.trim();
-
-    const message =
-        document.getElementById("message").value.trim();
-
-
-    /* Frontend validation */
-
-    if (!name || !email || !subject || !message) {
-
-        showFormFeedback(
-            "Please complete all fields.",
-            "error"
+        console.error(
+            "publicServices element was not found."
         );
 
         return;
     }
-
-
-    /* Email validation */
-
-    const emailRegex =
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
-    if (!emailRegex.test(email)) {
-
-        showFormFeedback(
-            "Please enter a valid email address.",
-            "error"
-        );
-
-        return;
-    }
-
-
-    /* Loading */
-
-    contactSubmit.disabled = true;
-
-    contactSubmit.querySelector("span").textContent =
-        "Sending...";
 
 
     try {
 
-        const response = await fetch(
-            "/api/contact",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    name,
-                    email,
-                    subject,
-                    message
-                })
-            }
+        console.log(
+            "Loading services from backend..."
         );
 
 
-        const data = await response.json();
+        const response =
+            await fetch("/api/services");
 
 
-        if (!response.ok) {
+        console.log(
+            "Services API response:",
+            response.status
+        );
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Services data:",
+            data
+        );
+
+
+        if (!response.ok || !data.success) {
 
             throw new Error(
                 data.message ||
-                "Something went wrong."
+                "Unable to load services."
             );
 
         }
 
 
-        /* Success */
+        if (
+            !data.services ||
+            data.services.length === 0
+        ) {
 
-        showFormFeedback(
-            "Your inquiry has been sent successfully!",
-            "success"
-        );
+            servicesContainer.innerHTML = `
+
+                <div class="services-empty">
+
+                    <h3>
+                        No services available
+                    </h3>
+
+                    <p>
+                        Our services will be available soon.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+        }
 
 
-        contactForm.reset();
+        servicesContainer.innerHTML =
+            data.services.map(service => `
+
+                <article class="public-service-card">
+
+                    <div class="public-service-number">
+                        ${String(service.id).padStart(2, "0")}
+                    </div>
 
 
-    } catch (error) {
+                    <span class="public-service-category">
 
-        showFormFeedback(
-            error.message ||
-            "Unable to send your inquiry.",
-            "error"
-        );
+                        ${escapePublicHtml(
+                            service.category
+                        )}
+
+                    </span>
+
+
+                    <h3>
+
+                        ${escapePublicHtml(
+                            service.name
+                        )}
+
+                    </h3>
+
+
+                    <p>
+
+                        ${escapePublicHtml(
+                            service.description
+                        )}
+
+                    </p>
+
+                </article>
+
+            `).join("");
 
     }
 
 
-    contactSubmit.disabled = false;
+    catch (error) {
 
-    contactSubmit.querySelector("span").textContent =
-        "Send inquiry";
+        console.error(
+            "Services loading error:",
+            error
+        );
 
-});
 
+        servicesContainer.innerHTML = `
 
-function showFormFeedback(message, type) {
+            <div class="services-error">
 
-    formFeedback.textContent = message;
+                <p>
+                    Unable to load services.
+                </p>
 
-    formFeedback.className =
-        `form-feedback ${type}`;
+            </div>
+
+        `;
+
+    }
 
 }
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapePublicHtml(value) {
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================================
+   INITIALIZE
+========================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        loadPublicServices();
+
+        updateCharacterCount();
+
+    }
+);

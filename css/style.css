@@ -2540,3 +2540,122 @@ a {
     }
 
 }
+/* =================================
+   TASK 6 - PUBLIC SERVICES
+================================= */
+
+.services-section {
+    padding: 100px 7%;
+    background: #f8f7f3;
+}
+
+.services-heading {
+    max-width: 700px;
+    margin-bottom: 50px;
+}
+
+.services-heading span {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #3155d9;
+}
+
+.services-heading h2 {
+    margin: 0 0 15px;
+    font-size: clamp(32px, 5vw, 58px);
+    line-height: 1.05;
+}
+
+.services-heading p {
+    color: #666;
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+.public-services-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.public-service-card {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid #e7e7e7;
+    border-radius: 18px;
+    padding: 30px;
+    min-height: 230px;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.public-service-card:hover {
+    transform: translateY(-5px);
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.07);
+}
+
+.public-service-number {
+    font-size: 13px;
+    font-weight: 700;
+    color: #aaa;
+    margin-bottom: 28px;
+}
+
+.public-service-category {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: #3155d9;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.3px;
+}
+
+.public-service-card h3 {
+    margin: 0 0 12px;
+    font-size: 23px;
+}
+
+.public-service-card p {
+    margin: 0;
+    color: #666;
+    line-height: 1.7;
+}
+
+.services-loading,
+.services-error,
+.services-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 45px;
+    color: #777;
+}
+
+.services-empty h3 {
+    color: #222;
+}
+
+@media (max-width: 900px) {
+
+    .public-services-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+
+    .services-section {
+        padding: 70px 6%;
+    }
+
+    .public-services-grid {
+        grid-template-columns: 1fr;
+    }
+}

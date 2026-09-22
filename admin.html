@@ -148,6 +148,103 @@
             </div>
 
         </section>
+        <section class="admin-section">
+
+    <div class="section-header">
+        <div>
+            <span class="section-label">SERVICE MANAGEMENT</span>
+            <h2>Company Services</h2>
+            <p>
+                Create, update and manage the services offered by TRUST.
+            </p>
+        </div>
+    </div>
+
+    <form id="serviceForm" class="admin-form">
+
+        <input
+            type="hidden"
+            id="serviceId"
+        >
+
+        <div class="form-group">
+            <label for="serviceName">
+                Service Name
+            </label>
+
+            <input
+                type="text"
+                id="serviceName"
+                placeholder="e.g. Message Analysis"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="serviceCategory">
+                Category
+            </label>
+
+            <input
+                type="text"
+                id="serviceCategory"
+                placeholder="e.g. Security"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="serviceDescription">
+                Description
+            </label>
+
+            <textarea
+                id="serviceDescription"
+                rows="4"
+                placeholder="Describe the service..."
+                required
+            ></textarea>
+        </div>
+
+        <div class="form-actions">
+
+            <button
+                type="submit"
+                class="primary-btn"
+                id="serviceSubmitBtn"
+            >
+                Add Service
+            </button>
+
+            <button
+                type="button"
+                class="secondary-btn"
+                id="cancelServiceEdit"
+                style="display:none;"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+        <p id="serviceMessage"></p>
+
+    </form>
+
+    <div class="services-management">
+
+        <div class="section-header">
+            <h3>Existing Services</h3>
+        </div>
+
+        <div
+            id="servicesList"
+            class="services-list"
+        ></div>
+
+    </div>
+
+</section>
 
     </main>
 
