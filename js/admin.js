@@ -1,3 +1,6 @@
+/* =========================================
+   ADMIN AUTHENTICATION
+========================================= */
 
 if (
     sessionStorage.getItem("adminAuthenticated") !== "true"
@@ -66,6 +69,10 @@ const cancelServiceEdit =
     document.getElementById("cancelServiceEdit");
 
 
+/* =========================================
+   ADMIN TOKEN
+========================================= */
+
 const adminToken =
     sessionStorage.getItem("adminToken");
 
@@ -79,14 +86,18 @@ async function loadContent() {
     try {
 
         const response = await fetch("/api/content", {
-    method: "GET",
-    headers: {
-        "x-admin-token": sessionStorage.getItem("adminToken")
-    }
-});
+            method: "GET",
+
+            headers: {
+                "x-admin-token":
+                    sessionStorage.getItem("adminToken")
+            }
+        });
+
 
         const data =
             await response.json();
+
 
         if (!response.ok) {
 
@@ -96,6 +107,7 @@ async function loadContent() {
             );
 
         }
+
 
         displayContent(data.content);
 
@@ -107,6 +119,7 @@ async function loadContent() {
             "Content loading error:",
             error
         );
+
 
         if (contentList) {
 
@@ -218,19 +231,31 @@ if (contentForm) {
 
 
             const title =
-                document.getElementById("title")
-                    .value.trim();
+                document
+                    .getElementById("title")
+                    .value
+                    .trim();
+
 
             const description =
-                document.getElementById("description")
-                    .value.trim();
+                document
+                    .getElementById("description")
+                    .value
+                    .trim();
+
 
             const category =
-                document.getElementById("category")
-                    .value.trim();
+                document
+                    .getElementById("category")
+                    .value
+                    .trim();
 
 
-            if (!title || !description || !category) {
+            if (
+                !title ||
+                !description ||
+                !category
+            ) {
 
                 showMessage(
                     "Please complete all fields.",
@@ -479,13 +504,17 @@ function resetForm() {
 
     editingId = null;
 
+
     contentForm.reset();
+
 
     formTitle.textContent =
         "Add New Content";
 
+
     saveBtn.textContent =
         "Add Content";
+
 
     cancelBtn.hidden =
         true;
@@ -509,6 +538,7 @@ function showMessage(
 
     formMessage.textContent =
         message;
+
 
     formMessage.style.color =
         isError
@@ -1069,6 +1099,305 @@ function showServiceMessage(
 
 
 /* =========================================
+   TASK 7
+   CUSTOMER REQUEST MANAGEMENT
+========================================= */
+
+const requestsList =
+    document.getElementById("requestsList");
+
+
+/* =========================================
+   LOAD CUSTOMER REQUESTS
+========================================= */
+
+async function loadRequests() {
+
+    if (!requestsList) {
+
+        console.error(
+            "requestsList element was not found."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/requests",
+                {
+                    method: "GET",
+
+                    headers: {
+                        "x-admin-token":
+                            adminToken
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok || !data.success) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load customer requests."
+            );
+
+        }
+
+
+        displayRequests(
+            data.requests
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Request loading error:",
+            error
+        );
+
+
+        requestsList.innerHTML = `
+            <div class="empty-state">
+
+                Unable to load customer requests.
+
+                <br>
+
+                <small>
+                    ${escapeHTML(error.message)}
+                </small>
+
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* =========================================
+   DISPLAY CUSTOMER REQUESTS
+========================================= */
+
+function displayRequests(requests) {
+
+    if (!requestsList) {
+        return;
+    }
+
+
+    if (
+        !requests ||
+        requests.length === 0
+    ) {
+
+        requestsList.innerHTML = `
+            <div class="empty-state">
+                No customer requests yet.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    requestsList.innerHTML =
+        requests.map(request => `
+
+            <article class="request-card">
+
+                <div class="request-card-header">
+
+                    <div>
+
+                        <span class="request-id">
+                            Request #${request.id}
+                        </span>
+
+                        <h3>
+                            ${escapeHTML(request.name)}
+                        </h3>
+
+                    </div>
+
+
+                    <span class="request-status">
+                        ${escapeHTML(request.status)}
+                    </span>
+
+                </div>
+
+
+                <div class="request-details">
+
+                    <p>
+                        <strong>Email:</strong>
+                        ${escapeHTML(request.email)}
+                    </p>
+
+                    <p>
+                        <strong>Service:</strong>
+                        ${escapeHTML(request.service)}
+                    </p>
+
+                    <p>
+                        <strong>Message:</strong>
+                        ${escapeHTML(request.message)}
+                    </p>
+
+                    <p>
+                        <strong>Date:</strong>
+                        ${escapeHTML(request.created_at)}
+                    </p>
+
+                </div>
+
+
+                <div class="request-actions">
+
+                    <label for="request-status-${request.id}">
+                        Update Status
+                    </label>
+
+                    <select
+                        id="request-status-${request.id}"
+                        onchange="updateRequestStatus(
+                            ${request.id},
+                            this.value
+                        )"
+                    >
+
+                        <option
+                            value="Pending"
+                            ${request.status === "Pending"
+                                ? "selected"
+                                : ""}
+                        >
+                            Pending
+                        </option>
+
+
+                        <option
+                            value="In Progress"
+                            ${request.status === "In Progress"
+                                ? "selected"
+                                : ""}
+                        >
+                            In Progress
+                        </option>
+
+
+                        <option
+                            value="Completed"
+                            ${request.status === "Completed"
+                                ? "selected"
+                                : ""}
+                        >
+                            Completed
+                        </option>
+
+
+                        <option
+                            value="Rejected"
+                            ${request.status === "Rejected"
+                                ? "selected"
+                                : ""}
+                        >
+                            Rejected
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </article>
+
+        `).join("");
+
+}
+
+
+/* =========================================
+   UPDATE REQUEST STATUS
+========================================= */
+
+async function updateRequestStatus(
+    id,
+    status
+) {
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/requests/${id}`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        "x-admin-token":
+                            adminToken
+                    },
+
+                    body:
+                        JSON.stringify({
+                            status: status
+                        })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok || !data.success) {
+
+            throw new Error(
+                data.message ||
+                "Unable to update request status."
+            );
+
+        }
+
+
+        await loadRequests();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Request status update error:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Unable to update request status."
+        );
+
+    }
+
+}
+
+
+/* =========================================
    LOGOUT
 ========================================= */
 
@@ -1082,9 +1411,11 @@ if (logoutBtn) {
                 "adminAuthenticated"
             );
 
+
             sessionStorage.removeItem(
                 "adminToken"
             );
+
 
             window.location.href =
                 "/admin-login.html";
@@ -1132,6 +1463,8 @@ document.addEventListener(
         await loadContent();
 
         await loadServices();
+
+        await loadRequests();
 
     }
 );

@@ -1075,7 +1075,194 @@ function escapePublicHtml(value) {
         .replace(/'/g, "&#039;");
 
 }
+/* =========================================
+   TASK 7 - CUSTOMER REQUEST
+========================================= */
 
+async function loadRequestServices() {
+
+    const serviceSelect =
+        document.getElementById("requestService");
+
+    if (!serviceSelect) {
+        console.error("requestService element was not found.");
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch("/api/services");
+
+        const data =
+            await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.message || "Unable to load services."
+            );
+        }
+
+        serviceSelect.innerHTML = `
+            <option value="">
+                Select a service
+            </option>
+        `;
+
+        data.services.forEach(service => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = service.name;
+            option.textContent = service.name;
+
+            serviceSelect.appendChild(option);
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Request services loading error:",
+            error
+        );
+
+        serviceSelect.innerHTML = `
+            <option value="">
+                Unable to load services
+            </option>
+        `;
+
+    }
+}
+
+
+/* =========================================
+   SUBMIT CUSTOMER REQUEST
+========================================= */
+
+const requestForm =
+    document.getElementById("requestForm");
+
+if (requestForm) {
+
+    requestForm.addEventListener(
+        "submit",
+        async event => {
+
+            event.preventDefault();
+
+            const name =
+                document
+                    .getElementById("requestName")
+                    .value
+                    .trim();
+
+            const email =
+                document
+                    .getElementById("requestEmail")
+                    .value
+                    .trim();
+
+            const service =
+                document
+                    .getElementById("requestService")
+                    .value
+                    .trim();
+
+            const message =
+                document
+                    .getElementById("requestMessage")
+                    .value
+                    .trim();
+
+            const statusMessage =
+                document.getElementById(
+                    "requestMessageStatus"
+                );
+
+
+            if (!name || !email || !service || !message) {
+
+                statusMessage.textContent =
+                    "Please fill in all fields.";
+
+                statusMessage.style.color = "#d9534f";
+
+                return;
+            }
+
+
+            try {
+
+                statusMessage.textContent =
+                    "Submitting your request...";
+
+                statusMessage.style.color = "#555";
+
+
+                const response =
+                    await fetch("/api/requests", {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            name: name,
+                            email: email,
+                            service: service,
+                            message: message
+                        })
+
+                    });
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok || !data.success) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to submit request."
+                    );
+
+                }
+
+
+                statusMessage.textContent =
+                    "Your request has been submitted successfully.";
+
+                statusMessage.style.color = "#2f8f5b";
+
+
+                requestForm.reset();
+
+            } catch (error) {
+
+                console.error(
+                    "Request submission error:",
+                    error
+                );
+
+                statusMessage.textContent =
+                    error.message ||
+                    "Unable to submit request.";
+
+                statusMessage.style.color = "#d9534f";
+
+            }
+
+        }
+    );
+
+}
 
 /* =========================================
    INITIALIZE
@@ -1086,6 +1273,8 @@ document.addEventListener(
     () => {
 
         loadPublicServices();
+
+        loadRequestServices();
 
         updateCharacterCount();
 

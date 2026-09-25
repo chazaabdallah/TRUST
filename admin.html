@@ -27,7 +27,9 @@
 
     <main class="admin-container">
 
-        <!-- ADD / EDIT FORM -->
+        <!-- =========================
+             ADD / EDIT CONTENT
+        ========================= -->
 
         <section class="content-form-section">
 
@@ -122,7 +124,9 @@
         </section>
 
 
-        <!-- EXISTING CONTENT -->
+        <!-- =========================
+             EXISTING CONTENT
+        ========================= -->
 
         <section class="content-list-section">
 
@@ -148,103 +152,183 @@
             </div>
 
         </section>
+
+
+        <!-- =========================
+             SERVICE MANAGEMENT
+        ========================= -->
+
         <section class="admin-section">
 
-    <div class="section-header">
-        <div>
-            <span class="section-label">SERVICE MANAGEMENT</span>
-            <h2>Company Services</h2>
-            <p>
-                Create, update and manage the services offered by TRUST.
-            </p>
-        </div>
-    </div>
+            <div class="section-header">
 
-    <form id="serviceForm" class="admin-form">
+                <div>
 
-        <input
-            type="hidden"
-            id="serviceId"
-        >
+                    <span class="section-label">
+                        SERVICE MANAGEMENT
+                    </span>
 
-        <div class="form-group">
-            <label for="serviceName">
-                Service Name
-            </label>
+                    <h2>
+                        Company Services
+                    </h2>
 
-            <input
-                type="text"
-                id="serviceName"
-                placeholder="e.g. Message Analysis"
-                required
+                    <p>
+                        Create, update and manage the services
+                        offered by TRUST.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form
+                id="serviceForm"
+                class="admin-form"
             >
-        </div>
 
-        <div class="form-group">
-            <label for="serviceCategory">
-                Category
-            </label>
+                <input
+                    type="hidden"
+                    id="serviceId"
+                >
 
-            <input
-                type="text"
-                id="serviceCategory"
-                placeholder="e.g. Security"
-                required
+
+                <div class="form-group">
+
+                    <label for="serviceName">
+                        Service Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="serviceName"
+                        placeholder="e.g. Message Analysis"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="serviceCategory">
+                        Category
+                    </label>
+
+                    <input
+                        type="text"
+                        id="serviceCategory"
+                        placeholder="e.g. Security"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="serviceDescription">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="serviceDescription"
+                        rows="4"
+                        placeholder="Describe the service..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                        id="serviceSubmitBtn"
+                    >
+                        Add Service
+                    </button>
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        id="cancelServiceEdit"
+                        style="display:none;"
+                    >
+                        Cancel
+                    </button>
+
+                </div>
+
+
+                <p id="serviceMessage"></p>
+
+            </form>
+
+
+            <div class="services-management">
+
+                <div class="section-header">
+
+                    <h3>
+                        Existing Services
+                    </h3>
+
+                </div>
+
+
+                <div
+                    id="servicesList"
+                    class="services-list"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             TASK 7 - CUSTOMER REQUESTS
+        ========================= -->
+
+        <section class="admin-section">
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="section-label">
+                        CUSTOMER REQUESTS
+                    </span>
+
+                    <h2>
+                        Request Management
+                    </h2>
+
+                    <p>
+                        Review customer requests and update
+                        their processing status.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="requestsList"
+                class="requests-list"
             >
-        </div>
 
-        <div class="form-group">
-            <label for="serviceDescription">
-                Description
-            </label>
+                <p class="loading">
+                    Loading customer requests...
+                </p>
 
-            <textarea
-                id="serviceDescription"
-                rows="4"
-                placeholder="Describe the service..."
-                required
-            ></textarea>
-        </div>
+            </div>
 
-        <div class="form-actions">
-
-            <button
-                type="submit"
-                class="primary-btn"
-                id="serviceSubmitBtn"
-            >
-                Add Service
-            </button>
-
-            <button
-                type="button"
-                class="secondary-btn"
-                id="cancelServiceEdit"
-                style="display:none;"
-            >
-                Cancel
-            </button>
-
-        </div>
-
-        <p id="serviceMessage"></p>
-
-    </form>
-
-    <div class="services-management">
-
-        <div class="section-header">
-            <h3>Existing Services</h3>
-        </div>
-
-        <div
-            id="servicesList"
-            class="services-list"
-        ></div>
-
-    </div>
-
-</section>
+        </section>
 
     </main>
 

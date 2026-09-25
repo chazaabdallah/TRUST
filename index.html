@@ -407,8 +407,6 @@
 
         <div class="checker-box reveal">
 
-            <!-- Tabs -->
-
             <div class="checker-tabs">
 
                 <button
@@ -434,8 +432,6 @@
 
             </div>
 
-
-            <!-- Input Area -->
 
             <div class="checker-input-area">
 
@@ -489,8 +485,6 @@
             </div>
 
 
-            <!-- RESULT -->
-
             <div
                 class="analysis-result"
                 id="analysisResult"
@@ -537,6 +531,7 @@
                         </span>
 
                         <div>
+
                             <strong>
                                 Suspicious link
                             </strong>
@@ -545,6 +540,7 @@
                                 The domain doesn't match
                                 the organization mentioned.
                             </p>
+
                         </div>
 
                     </div>
@@ -557,6 +553,7 @@
                         </span>
 
                         <div>
+
                             <strong>
                                 Urgency
                             </strong>
@@ -565,6 +562,7 @@
                                 The message pressures you
                                 to act quickly.
                             </p>
+
                         </div>
 
                     </div>
@@ -577,6 +575,7 @@
                         </span>
 
                         <div>
+
                             <strong>
                                 Account request
                             </strong>
@@ -958,6 +957,8 @@
     </div>
 
 </section>
+
+
 <!-- =========================
      CONTACT
 ========================= -->
@@ -1040,7 +1041,7 @@
                         type="text"
                         id="subject"
                         name="subject"
-                        placeholder="What is your inquiry about?"
+                        placeholder="What is this about?"
                         required
                     >
 
@@ -1057,7 +1058,7 @@
                         id="message"
                         name="message"
                         rows="6"
-                        placeholder="Write your message..."
+                        placeholder="Tell us more..."
                         required
                     ></textarea>
 
@@ -1066,25 +1067,13 @@
 
                 <button
                     type="submit"
-                    class="primary-button contact-submit"
-                    id="contactSubmit"
+                    class="primary-button"
                 >
-
-                    <span>
-                        Send inquiry
-                    </span>
-
-                    <strong>
-                        →
-                    </strong>
-
+                    Send inquiry
+                    <span>→</span>
                 </button>
 
-
-                <div
-                    class="form-feedback"
-                    id="formFeedback"
-                ></div>
+                <p id="contactMessage"></p>
 
             </form>
 
@@ -1094,37 +1083,197 @@
 
 </section>
 
+
 <!-- =========================
      FINAL CTA
 ========================= -->
 
-<section class="cta-section section">
+<section class="final-cta section">
 
-    <div class="cta-container reveal">
+    <div class="section-container">
 
-        <div class="cta-label">
-            TRUST, BUT VERIFY.
+        <div class="final-cta-content reveal">
+
+            <div class="section-number">
+                TAKE A SECOND
+            </div>
+
+            <h2>
+                Before you trust it,
+                <span>check it.</span>
+            </h2>
+
+            <p>
+                A few seconds of checking can make
+                a big difference.
+            </p>
+
+            <button
+                class="primary-button"
+                id="finalCheckButton"
+            >
+                Check something
+                <span>→</span>
+            </button>
+
         </div>
 
+    </div>
+
+</section>
+
+
+<!-- =========================
+     SERVICES
+========================= -->
+
+<section class="services-section" id="services">
+
+    <div class="services-heading">
+
+        <span>
+            WHAT WE OFFER
+        </span>
+
         <h2>
-            Before you trust it,
-            <span>check it.</span>
+            Services built around trust.
         </h2>
 
         <p>
-            Give yourself a second opinion before
-            clicking, paying, replying or sharing.
+            Explore the services available through TRUST.
         </p>
 
-        <button
-            class="primary-button large"
-            id="ctaButton"
-        >
-            Try TRUST
-            <span>→</span>
-        </button>
+    </div>
+
+
+    <div
+        id="publicServices"
+        class="public-services-grid"
+    >
+
+        <p class="services-loading">
+            Loading services...
+        </p>
 
     </div>
+
+</section>
+
+
+<!-- =========================
+     TASK 7 - CUSTOMER REQUEST
+========================= -->
+
+<section
+    class="request-section"
+    id="request"
+>
+
+    <div class="request-heading">
+
+        <span>
+            REQUEST A SERVICE
+        </span>
+
+        <h2>
+            Tell us what you need.
+        </h2>
+
+        <p>
+            Submit a request and our team will review it.
+        </p>
+
+    </div>
+
+
+    <form
+        id="requestForm"
+        class="request-form"
+    >
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label for="requestName">
+                    Name
+                </label>
+
+                <input
+                    type="text"
+                    id="requestName"
+                    placeholder="Your name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="requestEmail">
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="requestEmail"
+                    placeholder="your@email.com"
+                    required
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="requestService">
+                Service
+            </label>
+
+            <select
+                id="requestService"
+                required
+            >
+
+                <option value="">
+                    Select a service
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="requestMessage">
+                Message
+            </label>
+
+            <textarea
+                id="requestMessage"
+                rows="6"
+                placeholder="Describe your request..."
+                required
+            ></textarea>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="primary-button"
+        >
+            Submit Request
+        </button>
+
+
+        <p id="requestMessageStatus"></p>
+
+    </form>
 
 </section>
 
@@ -1166,6 +1315,14 @@
                 Privacy
             </a>
 
+            <a href="#services">
+                Services
+            </a>
+
+            <a href="#request">
+                Request a service
+            </a>
+
         </div>
 
 
@@ -1176,30 +1333,7 @@
     </div>
 
 </footer>
-<section class="services-section" id="services">
 
-    <div class="services-heading">
-        <span>WHAT WE OFFER</span>
-
-        <h2>
-            Services built around trust.
-        </h2>
-
-        <p>
-            Explore the services available through TRUST.
-        </p>
-    </div>
-
-    <div
-        id="publicServices"
-        class="public-services-grid"
-    >
-        <p class="services-loading">
-            Loading services...
-        </p>
-    </div>
-
-</section>
 
 <script src="js/script.js"></script>
 

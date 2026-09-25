@@ -5,6 +5,11 @@ const fs = require("fs");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 
+
+// =========================================
+// DATABASE FOLDER
+// =========================================
+
 const dbFolder = path.join(__dirname, "database");
 
 if (!fs.existsSync(dbFolder)) {
@@ -12,6 +17,34 @@ if (!fs.existsSync(dbFolder)) {
 }
 
 const db = require("./database/database");
+
+
+// =========================================
+// TASK 7 - CUSTOMER REQUESTS TABLE
+// =========================================
+
+db.run(`
+    CREATE TABLE IF NOT EXISTS requests (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        service TEXT NOT NULL,
+        message TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'Pending',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+`, (err) => {
+    if (err) {
+        console.error("Error creating requests table:", err.message);
+    } else {
+        console.log("Requests table is ready.");
+    }
+});
+
+
+// =========================================
+// APP CONFIGURATION
+// =========================================
 
 const app = express();
 
@@ -340,6 +373,8 @@ app.get("/api/auth/me", requireUser, (req, res) => {
         }
     );
 });
+
+
 // =========================================
 // UPDATE CUSTOMER ACCOUNT — TASK 5
 // =========================================
@@ -352,6 +387,7 @@ app.put("/api/auth/me", requireUser, async (req, res) => {
         currentPassword,
         newPassword
     } = req.body;
+
 
     // ==============================
     // BASIC VALIDATION
@@ -374,6 +410,7 @@ app.put("/api/auth/me", requireUser, async (req, res) => {
         });
     }
 
+
     // ==============================
     // EMAIL VALIDATION
     // ==============================
@@ -387,6 +424,7 @@ app.put("/api/auth/me", requireUser, async (req, res) => {
             message: "Please enter a valid email address."
         });
     }
+
 
     // ==============================
     // GET CURRENT USER
@@ -416,6 +454,7 @@ app.put("/api/auth/me", requireUser, async (req, res) => {
                     message: "User not found."
                 });
             }
+
 
             // ==============================
             // CHECK EMAIL AVAILABILITY
@@ -447,6 +486,7 @@ app.put("/api/auth/me", requireUser, async (req, res) => {
                                 "This email is already used by another account."
                         });
                     }
+
 
                     // ==============================
                     // PASSWORD UPDATE
@@ -492,6 +532,7 @@ app.put("/api/auth/me", requireUser, async (req, res) => {
                                 12
                             );
                     }
+
 
                     // ==============================
                     // UPDATE DATABASE
@@ -867,9 +908,11 @@ app.post("/api/contact", (req, res) => {
         }
     );
 });
-// ===============================
+
+
+// =========================================
 // TASK 6 - SERVICE MANAGEMENT
-// ===============================
+// =========================================
 
 app.get("/api/services", (req, res) => {
 
@@ -898,6 +941,8 @@ app.get("/api/services", (req, res) => {
         }
     );
 });
+
+
 app.post("/api/services", requireAdmin, (req, res) => {
 
     const {
@@ -907,6 +952,7 @@ app.post("/api/services", requireAdmin, (req, res) => {
     } = req.body;
 
     if (!name || !description || !category) {
+
         return res.status(400).json({
             success: false,
             message: "Name, description and category are required."
@@ -922,6 +968,7 @@ app.post("/api/services", requireAdmin, (req, res) => {
         cleanDescription === "" ||
         cleanCategory === ""
     ) {
+
         return res.status(400).json({
             success: false,
             message: "All service fields are required."
@@ -963,6 +1010,8 @@ app.post("/api/services", requireAdmin, (req, res) => {
         }
     );
 });
+
+
 app.put("/api/services/:id", requireAdmin, (req, res) => {
 
     const serviceId = req.params.id;
@@ -974,6 +1023,7 @@ app.put("/api/services/:id", requireAdmin, (req, res) => {
     } = req.body;
 
     if (!name || !description || !category) {
+
         return res.status(400).json({
             success: false,
             message: "Name, description and category are required."
@@ -989,6 +1039,7 @@ app.put("/api/services/:id", requireAdmin, (req, res) => {
         cleanDescription === "" ||
         cleanCategory === ""
     ) {
+
         return res.status(400).json({
             success: false,
             message: "All service fields are required."
@@ -1021,6 +1072,7 @@ app.put("/api/services/:id", requireAdmin, (req, res) => {
             }
 
             if (this.changes === 0) {
+
                 return res.status(404).json({
                     success: false,
                     message: "Service not found."
@@ -1034,6 +1086,8 @@ app.put("/api/services/:id", requireAdmin, (req, res) => {
         }
     );
 });
+
+
 app.delete("/api/services/:id", requireAdmin, (req, res) => {
 
     const serviceId = req.params.id;
@@ -1056,6 +1110,7 @@ app.delete("/api/services/:id", requireAdmin, (req, res) => {
             }
 
             if (this.changes === 0) {
+
                 return res.status(404).json({
                     success: false,
                     message: "Service not found."
@@ -1069,6 +1124,224 @@ app.delete("/api/services/:id", requireAdmin, (req, res) => {
         }
     );
 });
+
+
+// =========================================
+// TASK 7 - CUSTOMER REQUEST MANAGEMENT
+// =========================================
+
+
+// CUSTOMER: SUBMIT A SERVICE REQUEST
+
+app.post("/api/requests", (req, res) => {
+
+    const {
+        name,
+        email,
+        service,
+        message
+    } = req.body;
+
+
+    // Check required fields
+
+    if (!name || !email || !service || !message) {
+
+        return res.status(400).json({
+            success: false,
+            message: "All fields are required."
+        });
+    }
+
+
+    // Clean input
+
+    const cleanName = name.trim();
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanService = service.trim();
+    const cleanMessage = message.trim();
+
+
+    // Check empty values after trim
+
+    if (
+        cleanName === "" ||
+        cleanEmail === "" ||
+        cleanService === "" ||
+        cleanMessage === ""
+    ) {
+
+        return res.status(400).json({
+            success: false,
+            message: "All fields are required."
+        });
+    }
+
+
+    // Validate email format
+
+    const emailRegex =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(cleanEmail)) {
+
+        return res.status(400).json({
+            success: false,
+            message: "Please enter a valid email address."
+        });
+    }
+
+
+    // Insert request into database
+
+    const sql = `
+        INSERT INTO requests
+        (name, email, service, message)
+        VALUES (?, ?, ?, ?)
+    `;
+
+    db.run(
+        sql,
+        [
+            cleanName,
+            cleanEmail,
+            cleanService,
+            cleanMessage
+        ],
+        function (err) {
+
+            if (err) {
+
+                console.error(
+                    "Request creation error:",
+                    err.message
+                );
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Unable to submit request."
+                });
+            }
+
+            return res.status(201).json({
+                success: true,
+                message: "Request submitted successfully.",
+                requestId: this.lastID
+            });
+        }
+    );
+});
+
+
+// ADMIN: GET ALL CUSTOMER REQUESTS
+
+app.get("/api/requests", requireAdmin, (req, res) => {
+
+    const sql = `
+        SELECT *
+        FROM requests
+        ORDER BY created_at DESC
+    `;
+
+    db.all(sql, [], (err, rows) => {
+
+        if (err) {
+
+            console.error(
+                "Error loading requests:",
+                err.message
+            );
+
+            return res.status(500).json({
+                success: false,
+                message: "Unable to load requests."
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            requests: rows
+        });
+    });
+});
+
+
+// ADMIN: UPDATE REQUEST STATUS
+
+app.put("/api/requests/:id", requireAdmin, (req, res) => {
+
+    const { id } = req.params;
+
+    const { status } = req.body;
+
+
+    // Allowed request statuses
+
+    const allowedStatuses = [
+        "Pending",
+        "In Progress",
+        "Completed",
+        "Rejected"
+    ];
+
+
+    if (!allowedStatuses.includes(status)) {
+
+        return res.status(400).json({
+            success: false,
+            message: "Invalid request status."
+        });
+    }
+
+
+    // Update request status
+
+    const sql = `
+        UPDATE requests
+        SET status = ?
+        WHERE id = ?
+    `;
+
+    db.run(
+        sql,
+        [
+            status,
+            id
+        ],
+        function (err) {
+
+            if (err) {
+
+                console.error(
+                    "Request update error:",
+                    err.message
+                );
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Unable to update request."
+                });
+            }
+
+
+            if (this.changes === 0) {
+
+                return res.status(404).json({
+                    success: false,
+                    message: "Request not found."
+                });
+            }
+
+
+            return res.status(200).json({
+                success: true,
+                message:
+                    "Request status updated successfully."
+            });
+        }
+    );
+});
+
 
 // =========================================
 // START SERVER
