@@ -5,40 +5,72 @@
 const menuButton = document.getElementById("menuButton");
 const navLinks = document.getElementById("navLinks");
 
-const heroCheckButton = document.getElementById("heroCheckButton");
-const ctaButton = document.getElementById("ctaButton");
+const heroCheckButton =
+    document.getElementById("heroCheckButton");
 
-const checkerTabs = document.querySelectorAll(".checker-tab");
+const ctaButton =
+    document.getElementById("ctaButton");
 
-const checkInput = document.getElementById("checkInput");
-const inputLabel = document.getElementById("inputLabel");
-const charCount = document.getElementById("charCount");
+const checkerTabs =
+    document.querySelectorAll(".checker-tab");
 
-const clearButton = document.getElementById("clearButton");
-const analyzeButton = document.getElementById("analyzeButton");
+const checkInput =
+    document.getElementById("checkInput");
 
-const analysisResult = document.getElementById("analysisResult");
-const resetButton = document.getElementById("resetButton");
+const inputLabel =
+    document.getElementById("inputLabel");
 
-const checkRows = document.querySelectorAll(".check-row");
+const charCount =
+    document.getElementById("charCount");
+
+const clearButton =
+    document.getElementById("clearButton");
+
+const analyzeButton =
+    document.getElementById("analyzeButton");
+
+const analysisResult =
+    document.getElementById("analysisResult");
+
+const resetButton =
+    document.getElementById("resetButton");
+
+const checkRows =
+    document.querySelectorAll(".check-row");
 
 
 /* =========================================
    MOBILE MENU
 ========================================= */
 
-menuButton.addEventListener("click", () => {
-    navLinks.classList.toggle("open");
-});
+if (menuButton && navLinks) {
+
+    menuButton.addEventListener(
+        "click",
+        () => {
+            navLinks.classList.toggle("open");
+        }
+    );
+
+}
 
 
-document.querySelectorAll(".nav-links a").forEach(link => {
+document
+    .querySelectorAll(".nav-links a")
+    .forEach(link => {
 
-    link.addEventListener("click", () => {
-        navLinks.classList.remove("open");
+        link.addEventListener(
+            "click",
+            () => {
+
+                if (navLinks) {
+                    navLinks.classList.remove("open");
+                }
+
+            }
+        );
+
     });
-
-});
 
 
 /* =========================================
@@ -47,21 +79,42 @@ document.querySelectorAll(".nav-links a").forEach(link => {
 
 function scrollToChecker() {
 
-    document.getElementById("checker").scrollIntoView({
-        behavior: "smooth"
-    });
+    const checker =
+        document.getElementById("checker");
+
+    if (checker) {
+
+        checker.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }
 
 }
 
 
-heroCheckButton.addEventListener("click", () => {
-    scrollToChecker();
-});
+if (heroCheckButton) {
+
+    heroCheckButton.addEventListener(
+        "click",
+        () => {
+            scrollToChecker();
+        }
+    );
+
+}
 
 
-ctaButton.addEventListener("click", () => {
-    scrollToChecker();
-});
+if (ctaButton) {
+
+    ctaButton.addEventListener(
+        "click",
+        () => {
+            scrollToChecker();
+        }
+    );
+
+}
 
 
 /* =========================================
@@ -87,38 +140,66 @@ const examples = {
 
 checkerTabs.forEach(tab => {
 
-    tab.addEventListener("click", () => {
+    tab.addEventListener(
+        "click",
+        () => {
 
-        checkerTabs.forEach(item => {
-            item.classList.remove("active");
-        });
+            checkerTabs.forEach(item => {
 
-        tab.classList.add("active");
+                item.classList.remove("active");
 
-        currentType = tab.dataset.type;
+            });
 
-        if (currentType === "message") {
-            inputLabel.textContent = "Paste a message";
+
+            tab.classList.add("active");
+
+
+            currentType =
+                tab.dataset.type;
+
+
+            if (inputLabel) {
+
+                if (currentType === "message") {
+
+                    inputLabel.textContent =
+                        "Paste a message";
+
+                }
+
+                if (currentType === "link") {
+
+                    inputLabel.textContent =
+                        "Paste a link";
+
+                }
+
+                if (currentType === "offer") {
+
+                    inputLabel.textContent =
+                        "Paste an offer";
+
+                }
+
+            }
+
+
+            if (checkInput) {
+
+                checkInput.innerHTML = "";
+
+                checkInput.dataset.placeholder =
+                    examples[currentType];
+
+            }
+
+
+            updateCharacterCount();
+
+            hideResult();
+
         }
-
-        if (currentType === "link") {
-            inputLabel.textContent = "Paste a link";
-        }
-
-        if (currentType === "offer") {
-            inputLabel.textContent = "Paste an offer";
-        }
-
-        checkInput.innerHTML = "";
-
-        checkInput.dataset.placeholder =
-            examples[currentType];
-
-        updateCharacterCount();
-
-        hideResult();
-
-    });
+    );
 
 });
 
@@ -129,7 +210,14 @@ checkerTabs.forEach(tab => {
 
 function updateCharacterCount() {
 
-    const text = checkInput.innerText.trim();
+    if (!checkInput || !charCount) {
+        return;
+    }
+
+
+    const text =
+        checkInput.innerText.trim();
+
 
     charCount.textContent =
         `${text.length} character${text.length === 1 ? "" : "s"}`;
@@ -137,72 +225,116 @@ function updateCharacterCount() {
 }
 
 
-checkInput.addEventListener(
-    "input",
-    updateCharacterCount
-);
+if (checkInput) {
+
+    checkInput.addEventListener(
+        "input",
+        updateCharacterCount
+    );
+
+}
 
 
 /* =========================================
    CLEAR
 ========================================= */
 
-clearButton.addEventListener("click", () => {
+if (clearButton) {
 
-    checkInput.innerHTML = "";
+    clearButton.addEventListener(
+        "click",
+        () => {
 
-    updateCharacterCount();
+            if (!checkInput) {
+                return;
+            }
 
-    hideResult();
 
-    checkInput.focus();
+            checkInput.innerHTML = "";
 
-});
+            updateCharacterCount();
+
+            hideResult();
+
+            checkInput.focus();
+
+        }
+    );
+
+}
 
 
 /* =========================================
    ANALYZE
 ========================================= */
 
-analyzeButton.addEventListener("click", () => {
+if (analyzeButton && checkInput) {
 
-    const text = checkInput.innerText.trim();
+    analyzeButton.addEventListener(
+        "click",
+        () => {
 
-
-    if (!text) {
-
-        checkInput.classList.add("input-error");
-
-        setTimeout(() => {
-            checkInput.classList.remove("input-error");
-        }, 500);
-
-        checkInput.focus();
-
-        return;
-    }
+            const text =
+                checkInput.innerText.trim();
 
 
-    analyzeButton.classList.add("loading");
+            if (!text) {
 
-    analyzeButton.disabled = true;
+                checkInput.classList.add(
+                    "input-error"
+                );
 
-    hideResult();
+
+                setTimeout(
+                    () => {
+
+                        checkInput.classList.remove(
+                            "input-error"
+                        );
+
+                    },
+                    500
+                );
 
 
-    setTimeout(() => {
+                checkInput.focus();
 
-        analyzeText(text);
+                return;
 
-        analyzeButton.classList.remove("loading");
+            }
 
-        analyzeButton.disabled = false;
 
-        showResult();
+            analyzeButton.classList.add(
+                "loading"
+            );
 
-    }, 1000);
 
-});
+            analyzeButton.disabled = true;
+
+            hideResult();
+
+
+            setTimeout(
+                () => {
+
+                    analyzeText(text);
+
+                    analyzeButton.classList.remove(
+                        "loading"
+                    );
+
+                    analyzeButton.disabled = false;
+
+                    showResult();
+
+                },
+                1000
+            );
+
+        }
+    );
+
+}
 
 
 /* =========================================
@@ -211,7 +343,9 @@ analyzeButton.addEventListener("click", () => {
 
 function analyzeText(text) {
 
-    const lowerText = text.toLowerCase();
+    const lowerText =
+        text.toLowerCase();
+
 
     let riskScore = 0;
 
@@ -239,8 +373,9 @@ function analyzeText(text) {
 
 
     const hasUrgency =
-        urgencyWords.some(word =>
-            lowerText.includes(word)
+        urgencyWords.some(
+            word =>
+                lowerText.includes(word)
         );
 
 
@@ -248,9 +383,14 @@ function analyzeText(text) {
 
         riskScore += 20;
 
+
         findings.push({
+
             title: "Urgency",
-            text: "The message pressures you to act quickly."
+
+            text:
+                "The message pressures you to act quickly."
+
         });
 
     }
@@ -277,8 +417,9 @@ function analyzeText(text) {
 
 
     const asksForSensitiveInfo =
-        sensitiveWords.some(word =>
-            lowerText.includes(word)
+        sensitiveWords.some(
+            word =>
+                lowerText.includes(word)
         );
 
 
@@ -286,9 +427,15 @@ function analyzeText(text) {
 
         riskScore += 30;
 
+
         findings.push({
-            title: "Sensitive information",
-            text: "The content appears to request sensitive information."
+
+            title:
+                "Sensitive information",
+
+            text:
+                "The content appears to request sensitive information."
+
         });
 
     }
@@ -299,7 +446,9 @@ function analyzeText(text) {
     ------------------------------------- */
 
     const hasLink =
-        /https?:\/\/|www\.|\.com\/|\.net\/|\.org\//i.test(text);
+        /https?:\/\/|www\.|\.com\/|\.net\/|\.org\//i.test(
+            text
+        );
 
 
     const suspiciousDomains = [
@@ -317,8 +466,9 @@ function analyzeText(text) {
 
 
     const suspiciousLink =
-        suspiciousDomains.some(domain =>
-            lowerText.includes(domain)
+        suspiciousDomains.some(
+            domain =>
+                lowerText.includes(domain)
         );
 
 
@@ -326,9 +476,15 @@ function analyzeText(text) {
 
         riskScore += 30;
 
+
         findings.push({
-            title: "Suspicious link",
-            text: "The link contains patterns commonly associated with misleading pages."
+
+            title:
+                "Suspicious link",
+
+            text:
+                "The link contains patterns commonly associated with misleading pages."
+
         });
 
     }
@@ -337,9 +493,15 @@ function analyzeText(text) {
 
         riskScore += 8;
 
+
         findings.push({
-            title: "External link",
-            text: "The content contains an external link. Verify the destination before opening it."
+
+            title:
+                "External link",
+
+            text:
+                "The content contains an external link. Verify the destination before opening it."
+
         });
 
     }
@@ -366,8 +528,9 @@ function analyzeText(text) {
 
 
     const paymentRequest =
-        paymentWords.some(word =>
-            lowerText.includes(word)
+        paymentWords.some(
+            word =>
+                lowerText.includes(word)
         );
 
 
@@ -375,9 +538,15 @@ function analyzeText(text) {
 
         riskScore += 25;
 
+
         findings.push({
-            title: "Payment request",
-            text: "The content appears to involve a payment or transfer request."
+
+            title:
+                "Payment request",
+
+            text:
+                "The content appears to involve a payment or transfer request."
+
         });
 
     }
@@ -402,8 +571,9 @@ function analyzeText(text) {
 
 
     const suspiciousPrize =
-        prizeWords.some(word =>
-            lowerText.includes(word)
+        prizeWords.some(
+            word =>
+                lowerText.includes(word)
         );
 
 
@@ -411,9 +581,15 @@ function analyzeText(text) {
 
         riskScore += 20;
 
+
         findings.push({
-            title: "Unusual reward",
-            text: "The content makes an unexpected reward or prize claim."
+
+            title:
+                "Unusual reward",
+
+            text:
+                "The content makes an unexpected reward or prize claim."
+
         });
 
     }
@@ -437,8 +613,9 @@ function analyzeText(text) {
 
 
     const possibleImpersonation =
-        impersonationWords.some(word =>
-            lowerText.includes(word)
+        impersonationWords.some(
+            word =>
+                lowerText.includes(word)
         );
 
 
@@ -446,9 +623,15 @@ function analyzeText(text) {
 
         riskScore += 15;
 
+
         findings.push({
-            title: "Possible impersonation",
-            text: "The sender may be presenting itself as an organization or support team."
+
+            title:
+                "Possible impersonation",
+
+            text:
+                "The sender may be presenting itself as an organization or support team."
+
         });
 
     }
@@ -472,8 +655,9 @@ function analyzeText(text) {
 
 
     const threat =
-        threatWords.some(word =>
-            lowerText.includes(word)
+        threatWords.some(
+            word =>
+                lowerText.includes(word)
         );
 
 
@@ -481,9 +665,15 @@ function analyzeText(text) {
 
         riskScore += 20;
 
+
         findings.push({
-            title: "Threat or pressure",
-            text: "The message uses consequences to pressure you into acting."
+
+            title:
+                "Threat or pressure",
+
+            text:
+                "The message uses consequences to pressure you into acting."
+
         });
 
     }
@@ -504,7 +694,11 @@ function analyzeText(text) {
        LIMIT SCORE
     ------------------------------------- */
 
-    riskScore = Math.min(riskScore, 99);
+    riskScore =
+        Math.min(
+            riskScore,
+            99
+        );
 
 
     /* -------------------------------------
@@ -514,8 +708,13 @@ function analyzeText(text) {
     if (findings.length === 0) {
 
         findings.push({
-            title: "No major warning signs",
-            text: "TRUST did not detect strong risk indicators in this content."
+
+            title:
+                "No major warning signs",
+
+            text:
+                "TRUST did not detect strong risk indicators in this content."
+
         });
 
     }
@@ -530,19 +729,22 @@ function analyzeText(text) {
 
     if (riskScore >= 60) {
 
-        riskLevel = "High risk";
+        riskLevel =
+            "High risk";
 
     }
 
     else if (riskScore >= 30) {
 
-        riskLevel = "Medium risk";
+        riskLevel =
+            "Medium risk";
 
     }
 
     else {
 
-        riskLevel = "Low risk";
+        riskLevel =
+            "Low risk";
 
     }
 
@@ -564,26 +766,63 @@ function analyzeText(text) {
    UPDATE RESULT UI
 ========================================= */
 
-function updateResult(score, level, findings) {
+function updateResult(
+    score,
+    level,
+    findings
+) {
+
+    if (!analysisResult) {
+        return;
+    }
+
 
     const resultTitle =
-        analysisResult.querySelector(".result-top h3");
+        analysisResult.querySelector(
+            ".result-top h3"
+        );
+
 
     const scoreNumber =
-        analysisResult.querySelector(".result-score strong");
+        analysisResult.querySelector(
+            ".result-score strong"
+        );
+
 
     const progress =
-        document.getElementById("progressFill");
+        document.getElementById(
+            "progressFill"
+        );
+
 
     const resultGrid =
-        analysisResult.querySelector(".result-grid");
+        analysisResult.querySelector(
+            ".result-grid"
+        );
 
 
-    resultTitle.textContent = level;
+    if (
+        !resultTitle ||
+        !scoreNumber ||
+        !progress ||
+        !resultGrid
+    ) {
 
-    scoreNumber.textContent = score;
+        return;
 
-    progress.style.width = `${score}%`;
+    }
+
+
+    resultTitle.textContent =
+        level;
+
+
+    scoreNumber.textContent =
+        score;
+
+
+    progress.style.width =
+        `${score}%`;
 
 
     /* -------------------------------------
@@ -592,22 +831,31 @@ function updateResult(score, level, findings) {
 
     if (score >= 60) {
 
-        resultTitle.style.color = "#e38d43";
-        scoreNumber.style.color = "#e38d43";
+        resultTitle.style.color =
+            "#e38d43";
+
+        scoreNumber.style.color =
+            "#e38d43";
 
     }
 
     else if (score >= 30) {
 
-        resultTitle.style.color = "#e6b45d";
-        scoreNumber.style.color = "#e6b45d";
+        resultTitle.style.color =
+            "#e6b45d";
+
+        scoreNumber.style.color =
+            "#e6b45d";
 
     }
 
     else {
 
-        resultTitle.style.color = "#65bf99";
-        scoreNumber.style.color = "#65bf99";
+        resultTitle.style.color =
+            "#65bf99";
+
+        scoreNumber.style.color =
+            "#65bf99";
 
     }
 
@@ -619,35 +867,46 @@ function updateResult(score, level, findings) {
     resultGrid.innerHTML = "";
 
 
-    findings.slice(0, 3).forEach(finding => {
+    findings
+        .slice(0, 3)
+        .forEach(
+            finding => {
 
-        const div = document.createElement("div");
+                const div =
+                    document.createElement(
+                        "div"
+                    );
 
-        div.className = "finding";
 
-        div.innerHTML = `
+                div.className =
+                    "finding";
 
-            <span class="finding-icon">
-                !
-            </span>
 
-            <div>
+                div.innerHTML = `
 
-                <strong>
-                    ${finding.title}
-                </strong>
+                    <span class="finding-icon">
+                        !
+                    </span>
 
-                <p>
-                    ${finding.text}
-                </p>
+                    <div>
 
-            </div>
+                        <strong>
+                            ${finding.title}
+                        </strong>
 
-        `;
+                        <p>
+                            ${finding.text}
+                        </p>
 
-        resultGrid.appendChild(div);
+                    </div>
 
-    });
+                `;
+
+
+                resultGrid.appendChild(div);
+
+            }
+        );
 
 
     /* -------------------------------------
@@ -658,6 +917,11 @@ function updateResult(score, level, findings) {
         analysisResult.querySelector(
             ".recommendation strong"
         );
+
+
+    if (!recommendation) {
+        return;
+    }
 
 
     if (score >= 60) {
@@ -690,7 +954,13 @@ function updateResult(score, level, findings) {
 
 function showResult() {
 
-    analysisResult.classList.add("show");
+    if (analysisResult) {
+
+        analysisResult.classList.add(
+            "show"
+        );
+
+    }
 
 }
 
@@ -701,7 +971,13 @@ function showResult() {
 
 function hideResult() {
 
-    analysisResult.classList.remove("show");
+    if (analysisResult) {
+
+        analysisResult.classList.remove(
+            "show"
+        );
+
+    }
 
 }
 
@@ -710,17 +986,29 @@ function hideResult() {
    RESET
 ========================================= */
 
-resetButton.addEventListener("click", () => {
+if (resetButton) {
 
-    checkInput.innerHTML = "";
+    resetButton.addEventListener(
+        "click",
+        () => {
 
-    updateCharacterCount();
+            if (checkInput) {
 
-    hideResult();
+                checkInput.innerHTML = "";
 
-    checkInput.focus();
+                checkInput.focus();
 
-});
+            }
+
+
+            updateCharacterCount();
+
+            hideResult();
+
+        }
+    );
+
+}
 
 
 /* =========================================
@@ -729,75 +1017,124 @@ resetButton.addEventListener("click", () => {
 
 checkRows.forEach(row => {
 
-    row.addEventListener("click", () => {
+    row.addEventListener(
+        "click",
+        () => {
 
-        const selectedType = row.dataset.demo;
-
-        let tabType = selectedType;
-
-
-        if (
-            selectedType !== "message" &&
-            selectedType !== "link" &&
-            selectedType !== "offer"
-        ) {
-
-            tabType = "message";
-
-        }
+            const selectedType =
+                row.dataset.demo;
 
 
-        checkerTabs.forEach(tab => {
+            let tabType =
+                selectedType;
 
-            tab.classList.remove("active");
 
-            if (tab.dataset.type === tabType) {
+            if (
+                selectedType !== "message" &&
+                selectedType !== "link" &&
+                selectedType !== "offer"
+            ) {
 
-                tab.classList.add("active");
+                tabType =
+                    "message";
 
             }
 
-        });
+
+            checkerTabs.forEach(tab => {
+
+                tab.classList.remove(
+                    "active"
+                );
 
 
-        currentType = tabType;
+                if (
+                    tab.dataset.type ===
+                    tabType
+                ) {
 
+                    tab.classList.add(
+                        "active"
+                    );
 
-        if (tabType === "message") {
-            inputLabel.textContent = "Paste a message";
-        }
+                }
 
-        if (tabType === "link") {
-            inputLabel.textContent = "Paste a link";
-        }
-
-        if (tabType === "offer") {
-            inputLabel.textContent = "Paste an offer";
-        }
-
-
-        checkInput.innerHTML = "";
-
-        checkInput.dataset.placeholder =
-            examples[tabType];
-
-        updateCharacterCount();
-
-        hideResult();
-
-
-        document
-            .getElementById("checker")
-            .scrollIntoView({
-                behavior: "smooth"
             });
 
 
-        setTimeout(() => {
-            checkInput.focus();
-        }, 600);
+            currentType =
+                tabType;
 
-    });
+
+            if (inputLabel) {
+
+                if (tabType === "message") {
+
+                    inputLabel.textContent =
+                        "Paste a message";
+
+                }
+
+                if (tabType === "link") {
+
+                    inputLabel.textContent =
+                        "Paste a link";
+
+                }
+
+                if (tabType === "offer") {
+
+                    inputLabel.textContent =
+                        "Paste an offer";
+
+                }
+
+            }
+
+
+            if (checkInput) {
+
+                checkInput.innerHTML = "";
+
+                checkInput.dataset.placeholder =
+                    examples[tabType];
+
+            }
+
+
+            updateCharacterCount();
+
+            hideResult();
+
+
+            const checker =
+                document.getElementById(
+                    "checker"
+                );
+
+
+            if (checker) {
+
+                checker.scrollIntoView({
+                    behavior: "smooth"
+                });
+
+            }
+
+
+            setTimeout(
+                () => {
+
+                    if (checkInput) {
+                        checkInput.focus();
+                    }
+
+                },
+                600
+            );
+
+        }
+    );
 
 });
 
@@ -807,7 +1144,9 @@ checkRows.forEach(row => {
 ========================================= */
 
 const revealElements =
-    document.querySelectorAll(".reveal");
+    document.querySelectorAll(
+        ".reveal"
+    );
 
 
 const revealObserver =
@@ -815,19 +1154,26 @@ const revealObserver =
 
         entries => {
 
-            entries.forEach(entry => {
+            entries.forEach(
+                entry => {
 
-                if (entry.isIntersecting) {
+                    if (
+                        entry.isIntersecting
+                    ) {
 
-                    entry.target.classList.add("visible");
+                        entry.target.classList.add(
+                            "visible"
+                        );
 
-                    revealObserver.unobserve(
-                        entry.target
-                    );
+
+                        revealObserver.unobserve(
+                            entry.target
+                        );
+
+                    }
 
                 }
-
-            });
+            );
 
         },
 
@@ -838,11 +1184,15 @@ const revealObserver =
     );
 
 
-revealElements.forEach(element => {
+revealElements.forEach(
+    element => {
 
-    revealObserver.observe(element);
+        revealObserver.observe(
+            element
+        );
 
-});
+    }
+);
 
 
 /* =========================================
@@ -850,13 +1200,21 @@ revealElements.forEach(element => {
 ========================================= */
 
 const heroVisual =
-    document.querySelector(".hero-visual");
+    document.querySelector(
+        ".hero-visual"
+    );
+
 
 const messageCard =
-    document.querySelector(".message-card");
+    document.querySelector(
+        ".message-card"
+    );
+
 
 const riskCard =
-    document.querySelector(".risk-card");
+    document.querySelector(
+        ".risk-card"
+    );
 
 
 if (
@@ -873,13 +1231,17 @@ if (
             const rect =
                 heroVisual.getBoundingClientRect();
 
+
             const x =
                 (event.clientX - rect.left)
-                / rect.width - 0.5;
+                / rect.width
+                - 0.5;
+
 
             const y =
                 (event.clientY - rect.top)
-                / rect.height - 0.5;
+                / rect.height
+                - 0.5;
 
 
             messageCard.style.transform =
@@ -902,6 +1264,7 @@ if (
             messageCard.style.transform =
                 "rotate(-3deg)";
 
+
             riskCard.style.transform =
                 "rotate(3deg)";
 
@@ -918,7 +1281,9 @@ if (
 async function loadPublicServices() {
 
     const servicesContainer =
-        document.getElementById("publicServices");
+        document.getElementById(
+            "publicServices"
+        );
 
 
     if (!servicesContainer) {
@@ -939,7 +1304,9 @@ async function loadPublicServices() {
 
 
         const response =
-            await fetch("/api/services");
+            await fetch(
+                "/api/services"
+            );
 
 
         console.log(
@@ -958,7 +1325,10 @@ async function loadPublicServices() {
         );
 
 
-        if (!response.ok || !data.success) {
+        if (
+            !response.ok ||
+            !data.success
+        ) {
 
             throw new Error(
                 data.message ||
@@ -994,44 +1364,54 @@ async function loadPublicServices() {
 
 
         servicesContainer.innerHTML =
-            data.services.map(service => `
+            data.services
+                .map(
+                    service => `
 
-                <article class="public-service-card">
+                    <article
+                        class="public-service-card"
+                    >
 
-                    <div class="public-service-number">
-                        ${String(service.id).padStart(2, "0")}
-                    </div>
-
-
-                    <span class="public-service-category">
-
-                        ${escapePublicHtml(
-                            service.category
-                        )}
-
-                    </span>
+                        <div
+                            class="public-service-number"
+                        >
+                            ${String(service.id).padStart(2, "0")}
+                        </div>
 
 
-                    <h3>
+                        <span
+                            class="public-service-category"
+                        >
 
-                        ${escapePublicHtml(
-                            service.name
-                        )}
+                            ${escapePublicHtml(
+                                service.category
+                            )}
 
-                    </h3>
+                        </span>
 
 
-                    <p>
+                        <h3>
 
-                        ${escapePublicHtml(
-                            service.description
-                        )}
+                            ${escapePublicHtml(
+                                service.name
+                            )}
 
-                    </p>
+                        </h3>
 
-                </article>
 
-            `).join("");
+                        <p>
+
+                            ${escapePublicHtml(
+                                service.description
+                            )}
+
+                        </p>
+
+                    </article>
+
+                `
+                )
+                .join("");
 
     }
 
@@ -1068,13 +1448,35 @@ async function loadPublicServices() {
 function escapePublicHtml(value) {
 
     return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
+
+
 /* =========================================
    TASK 7 - CUSTOMER REQUEST
 ========================================= */
@@ -1082,59 +1484,100 @@ function escapePublicHtml(value) {
 async function loadRequestServices() {
 
     const serviceSelect =
-        document.getElementById("requestService");
+        document.getElementById(
+            "requestService"
+        );
+
 
     if (!serviceSelect) {
-        console.error("requestService element was not found.");
+
+        console.error(
+            "requestService element was not found."
+        );
+
         return;
     }
+
 
     try {
 
         const response =
-            await fetch("/api/services");
+            await fetch(
+                "/api/services"
+            );
+
 
         const data =
             await response.json();
 
-        if (!response.ok || !data.success) {
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
             throw new Error(
-                data.message || "Unable to load services."
+                data.message ||
+                "Unable to load services."
             );
+
         }
 
+
         serviceSelect.innerHTML = `
+
             <option value="">
                 Select a service
             </option>
+
         `;
 
-        data.services.forEach(service => {
 
-            const option =
-                document.createElement("option");
+        data.services.forEach(
+            service => {
 
-            option.value = service.name;
-            option.textContent = service.name;
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
-            serviceSelect.appendChild(option);
 
-        });
+                option.value =
+                    service.name;
 
-    } catch (error) {
+
+                option.textContent =
+                    service.name;
+
+
+                serviceSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+
+    catch (error) {
 
         console.error(
             "Request services loading error:",
             error
         );
 
+
         serviceSelect.innerHTML = `
+
             <option value="">
                 Unable to load services
             </option>
+
         `;
 
     }
+
 }
 
 
@@ -1143,7 +1586,10 @@ async function loadRequestServices() {
 ========================================= */
 
 const requestForm =
-    document.getElementById("requestForm");
+    document.getElementById(
+        "requestForm"
+    );
+
 
 if (requestForm) {
 
@@ -1153,29 +1599,42 @@ if (requestForm) {
 
             event.preventDefault();
 
+
             const name =
                 document
-                    .getElementById("requestName")
-                    .value
-                    .trim();
+                    .getElementById(
+                        "requestName"
+                    )
+                    ?.value
+                    .trim() || "";
+
 
             const email =
                 document
-                    .getElementById("requestEmail")
-                    .value
-                    .trim();
+                    .getElementById(
+                        "requestEmail"
+                    )
+                    ?.value
+                    .trim() || "";
+
 
             const service =
                 document
-                    .getElementById("requestService")
-                    .value
-                    .trim();
+                    .getElementById(
+                        "requestService"
+                    )
+                    ?.value
+                    .trim() || "";
+
 
             const message =
                 document
-                    .getElementById("requestMessage")
-                    .value
-                    .trim();
+                    .getElementById(
+                        "requestMessage"
+                    )
+                    ?.value
+                    .trim() || "";
+
 
             const statusMessage =
                 document.getElementById(
@@ -1183,12 +1642,22 @@ if (requestForm) {
                 );
 
 
-            if (!name || !email || !service || !message) {
+            if (
+                !name ||
+                !email ||
+                !service ||
+                !message
+            ) {
 
-                statusMessage.textContent =
-                    "Please fill in all fields.";
+                if (statusMessage) {
 
-                statusMessage.style.color = "#d9534f";
+                    statusMessage.textContent =
+                        "Please fill in all fields.";
+
+                    statusMessage.style.color =
+                        "#d9534f";
+
+                }
 
                 return;
             }
@@ -1196,37 +1665,60 @@ if (requestForm) {
 
             try {
 
-                statusMessage.textContent =
-                    "Submitting your request...";
+                if (statusMessage) {
 
-                statusMessage.style.color = "#555";
+                    statusMessage.textContent =
+                        "Submitting your request...";
+
+                    statusMessage.style.color =
+                        "#555";
+
+                }
 
 
                 const response =
-                    await fetch("/api/requests", {
+                    await fetch(
+                        "/api/requests",
+                        {
 
-                        method: "POST",
+                            method: "POST",
 
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
+                            headers: {
 
-                        body: JSON.stringify({
-                            name: name,
-                            email: email,
-                            service: service,
-                            message: message
-                        })
+                                "Content-Type":
+                                    "application/json"
 
-                    });
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    name:
+                                        name,
+
+                                    email:
+                                        email,
+
+                                    service:
+                                        service,
+
+                                    message:
+                                        message
+
+                                })
+
+                        }
+                    );
 
 
                 const data =
                     await response.json();
 
 
-                if (!response.ok || !data.success) {
+                if (
+                    !response.ok ||
+                    !data.success
+                ) {
 
                     throw new Error(
                         data.message ||
@@ -1236,26 +1728,40 @@ if (requestForm) {
                 }
 
 
-                statusMessage.textContent =
-                    "Your request has been submitted successfully.";
+                if (statusMessage) {
 
-                statusMessage.style.color = "#2f8f5b";
+                    statusMessage.textContent =
+                        "Your request has been submitted successfully.";
+
+                    statusMessage.style.color =
+                        "#2f8f5b";
+
+                }
 
 
                 requestForm.reset();
 
-            } catch (error) {
+            }
+
+
+            catch (error) {
 
                 console.error(
                     "Request submission error:",
                     error
                 );
 
-                statusMessage.textContent =
-                    error.message ||
-                    "Unable to submit request.";
 
-                statusMessage.style.color = "#d9534f";
+                if (statusMessage) {
+
+                    statusMessage.textContent =
+                        error.message ||
+                        "Unable to submit request.";
+
+                    statusMessage.style.color =
+                        "#d9534f";
+
+                }
 
             }
 
@@ -1263,6 +1769,7 @@ if (requestForm) {
     );
 
 }
+
 
 /* =========================================
    INITIALIZE
