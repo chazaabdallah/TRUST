@@ -1,35 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>TRUST — Content Management</title>
 
-    <link rel="stylesheet" href="css/admin.css">
+    <link
+        rel="stylesheet"
+        href="css/admin.css"
+    >
+
 </head>
 
+
 <body>
+
+
+    <!-- =========================================
+         ADMIN HEADER
+    ========================================= -->
 
     <header class="admin-header">
 
         <div>
-            <p class="eyebrow">TRUST — INTERNAL</p>
-            <h1>Content Management</h1>
+
+            <p class="eyebrow">
+                TRUST — INTERNAL
+            </p>
+
+            <h1>
+                Content Management
+            </h1>
+
         </div>
 
-        <button id="logoutBtn" class="logout-btn">
+
+        <button
+            id="logoutBtn"
+            class="logout-btn"
+        >
             Logout
         </button>
 
     </header>
 
 
+
+    <!-- =========================================
+         MAIN ADMIN CONTAINER
+    ========================================= -->
+
     <main class="admin-container">
 
-        <!-- =========================
+
+        <!-- =========================================
              ADD / EDIT CONTENT
-        ========================= -->
+        ========================================= -->
 
         <section class="content-form-section">
 
@@ -48,6 +81,7 @@
 
             <form id="contentForm">
 
+
                 <div class="form-group">
 
                     <label for="title">
@@ -62,6 +96,7 @@
                     >
 
                 </div>
+
 
 
                 <div class="form-group">
@@ -80,6 +115,7 @@
                 </div>
 
 
+
                 <div class="form-group">
 
                     <label for="description">
@@ -96,6 +132,7 @@
                 </div>
 
 
+
                 <div class="form-actions">
 
                     <button
@@ -104,6 +141,7 @@
                     >
                         Add Content
                     </button>
+
 
                     <button
                         type="button"
@@ -124,9 +162,10 @@
         </section>
 
 
-        <!-- =========================
+
+        <!-- =========================================
              EXISTING CONTENT
-        ========================= -->
+        ========================================= -->
 
         <section class="content-list-section">
 
@@ -154,9 +193,10 @@
         </section>
 
 
-        <!-- =========================
-             SERVICE MANAGEMENT
-        ========================= -->
+
+        <!-- =========================================
+             TASK 6 — SERVICE MANAGEMENT
+        ========================================= -->
 
         <section class="admin-section">
 
@@ -168,9 +208,11 @@
                         SERVICE MANAGEMENT
                     </span>
 
+
                     <h2>
                         Company Services
                     </h2>
+
 
                     <p>
                         Create, update and manage the services
@@ -182,10 +224,14 @@
             </div>
 
 
+
+            <!-- SERVICE FORM -->
+
             <form
                 id="serviceForm"
                 class="admin-form"
             >
+
 
                 <input
                     type="hidden"
@@ -193,11 +239,13 @@
                 >
 
 
+
                 <div class="form-group">
 
                     <label for="serviceName">
                         Service Name
                     </label>
+
 
                     <input
                         type="text"
@@ -209,11 +257,13 @@
                 </div>
 
 
+
                 <div class="form-group">
 
                     <label for="serviceCategory">
                         Category
                     </label>
+
 
                     <input
                         type="text"
@@ -225,11 +275,13 @@
                 </div>
 
 
+
                 <div class="form-group">
 
                     <label for="serviceDescription">
                         Description
                     </label>
+
 
                     <textarea
                         id="serviceDescription"
@@ -241,6 +293,7 @@
                 </div>
 
 
+
                 <div class="form-actions">
 
                     <button
@@ -250,6 +303,7 @@
                     >
                         Add Service
                     </button>
+
 
                     <button
                         type="button"
@@ -267,6 +321,9 @@
 
             </form>
 
+
+
+            <!-- EXISTING SERVICES -->
 
             <div class="services-management">
 
@@ -289,11 +346,15 @@
         </section>
 
 
-        <!-- =========================
-             TASK 7 - CUSTOMER REQUESTS
-        ========================= -->
+
+        <!-- =========================================
+             TASK 8 — SEARCH & FILTER CUSTOMER REQUESTS
+        ========================================= -->
 
         <section class="admin-section">
+
+
+            <!-- SECTION HEADER -->
 
             <div class="section-header">
 
@@ -303,19 +364,175 @@
                         CUSTOMER REQUESTS
                     </span>
 
+
                     <h2>
                         Request Management
                     </h2>
 
+
                     <p>
-                        Review customer requests and update
-                        their processing status.
+                        Search and filter customer requests
+                        using the available information.
                     </p>
 
                 </div>
 
             </div>
 
+
+
+            <!-- =========================================
+                 SEARCH & FILTER PANEL
+            ========================================= -->
+
+            <div class="request-filter-panel">
+
+
+                <!-- FILTER HEADER -->
+
+                <div class="filter-heading">
+
+                    <div>
+
+                        <span>
+                            SEARCH & FILTER
+                        </span>
+
+
+                        <h3>
+                            Find a request
+                        </h3>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        id="clearRequestFilters"
+                        class="clear-filters-btn"
+                    >
+                        Clear filters
+                    </button>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     FILTERS
+                ========================================= -->
+
+                <div class="request-filters">
+
+
+                    <!-- SEARCH -->
+
+                    <div
+                        class="filter-group search-filter"
+                    >
+
+                        <label for="requestSearch">
+                            Search
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="requestSearch"
+                            placeholder="Search name, email or message..."
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+
+                    <!-- SERVICE FILTER -->
+
+                    <div class="filter-group">
+
+                        <label for="requestServiceFilter">
+                            Service
+                        </label>
+
+
+                        <select
+                            id="requestServiceFilter"
+                        >
+
+                            <option value="">
+                                All services
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- STATUS FILTER -->
+
+                    <div class="filter-group">
+
+                        <label for="requestStatusFilter">
+                            Status
+                        </label>
+
+
+                        <select
+                            id="requestStatusFilter"
+                        >
+
+                            <option value="">
+                                All statuses
+                            </option>
+
+
+                            <option value="Pending">
+                                Pending
+                            </option>
+
+
+                            <option value="In Progress">
+                                In Progress
+                            </option>
+
+
+                            <option value="Completed">
+                                Completed
+                            </option>
+
+
+                            <option value="Rejected">
+                                Rejected
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =========================================
+                     FILTER RESULT MESSAGE
+                ========================================= -->
+
+                <div
+                    id="requestFilterMessage"
+                    class="filter-result-message"
+                >
+                    Loading requests...
+                </div>
+
+            </div>
+
+
+
+            <!-- =========================================
+                 REQUEST RESULTS
+            ========================================= -->
 
             <div
                 id="requestsList"
@@ -330,10 +547,18 @@
 
         </section>
 
+
     </main>
 
 
+
+    <!-- =========================================
+         ADMIN JAVASCRIPT
+    ========================================= -->
+
     <script src="js/admin.js"></script>
 
+
 </body>
+
 </html>

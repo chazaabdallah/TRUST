@@ -1099,7 +1099,7 @@ function showServiceMessage(
 
 
 /* =========================================
-   TASK 7
+   TASK 7 + TASK 8
    CUSTOMER REQUEST MANAGEMENT
 ========================================= */
 
@@ -1108,7 +1108,44 @@ const requestsList =
 
 
 /* =========================================
+   TASK 8
+   SEARCH & FILTER ELEMENTS
+========================================= */
+
+const requestSearch =
+    document.getElementById(
+        "requestSearch"
+    );
+
+
+const requestServiceFilter =
+    document.getElementById(
+        "requestServiceFilter"
+    );
+
+
+const requestStatusFilter =
+    document.getElementById(
+        "requestStatusFilter"
+    );
+
+
+const clearRequestFilters =
+    document.getElementById(
+        "clearRequestFilters"
+    );
+
+
+const requestFilterMessage =
+    document.getElementById(
+        "requestFilterMessage"
+    );
+
+
+/* =========================================
+   TASK 8
    LOAD CUSTOMER REQUESTS
+   SEARCH + FILTER
 ========================================= */
 
 async function loadRequests() {
@@ -1125,9 +1162,89 @@ async function loadRequests() {
 
     try {
 
+        /*
+         * Get the current filter values.
+         */
+
+        const search =
+            requestSearch
+                ? requestSearch.value.trim()
+                : "";
+
+
+        const service =
+            requestServiceFilter
+                ? requestServiceFilter.value
+                : "";
+
+
+        const status =
+            requestStatusFilter
+                ? requestStatusFilter.value
+                : "";
+
+
+        /*
+         * Build the query string.
+         */
+
+        const params =
+            new URLSearchParams();
+
+
+        if (search) {
+
+            params.append(
+                "search",
+                search
+            );
+
+        }
+
+
+        if (service) {
+
+            params.append(
+                "service",
+                service
+            );
+
+        }
+
+
+        if (status) {
+
+            params.append(
+                "status",
+                status
+            );
+
+        }
+
+
+        const queryString =
+            params.toString();
+
+
+        /*
+         * If there are filters:
+         *
+         * /api/requests?search=...
+         *
+         * Otherwise:
+         *
+         * /api/requests
+         */
+
+        const url =
+            queryString
+                ? `/api/requests?${queryString}`
+                : "/api/requests";
+
+
         const response =
             await fetch(
-                "/api/requests",
+                url,
                 {
                     method: "GET",
 
@@ -1143,7 +1260,10 @@ async function loadRequests() {
             await response.json();
 
 
-        if (!response.ok || !data.success) {
+        if (
+            !response.ok ||
+            !data.success
+        ) {
 
             throw new Error(
                 data.message ||
@@ -1155,6 +1275,11 @@ async function loadRequests() {
 
         displayRequests(
             data.requests
+        );
+
+
+        updateRequestFilterMessage(
+            data.requests.length
         );
 
     }
@@ -1181,7 +1306,135 @@ async function loadRequests() {
             </div>
         `;
 
+
+        if (requestFilterMessage) {
+
+            requestFilterMessage.textContent =
+                "Unable to load requests.";
+
+        }
+
     }
+
+}
+
+
+/* =========================================
+   TASK 8
+   LOAD SERVICE FILTER OPTIONS
+========================================= */
+
+async function loadRequestServiceFilter() {
+
+    if (!requestServiceFilter) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/services"
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Unable to load services."
+            );
+
+        }
+
+
+        /*
+         * Start with "All services".
+         */
+
+        requestServiceFilter.innerHTML = `
+            <option value="">
+                All services
+            </option>
+        `;
+
+
+        /*
+         * Add every service from database.
+         */
+
+        data.services.forEach(
+            service => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    service.name;
+
+
+                option.textContent =
+                    service.name;
+
+
+                requestServiceFilter
+                    .appendChild(
+                        option
+                    );
+
+            }
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Filter services loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   TASK 8
+   FILTER RESULT COUNT
+========================================= */
+
+function updateRequestFilterMessage(
+    count
+) {
+
+    if (!requestFilterMessage) {
+        return;
+    }
+
+
+    if (count === 0) {
+
+        requestFilterMessage.textContent =
+            "No requests match your search and filters.";
+
+        return;
+    }
+
+
+    requestFilterMessage.textContent =
+        `${count} request${count === 1 ? "" : "s"} found.`;
 
 }
 
@@ -1225,6 +1478,7 @@ function displayRequests(requests) {
                             Request #${request.id}
                         </span>
 
+
                         <h3>
                             ${escapeHTML(request.name)}
                         </h3>
@@ -1246,15 +1500,18 @@ function displayRequests(requests) {
                         ${escapeHTML(request.email)}
                     </p>
 
+
                     <p>
                         <strong>Service:</strong>
                         ${escapeHTML(request.service)}
                     </p>
 
+
                     <p>
                         <strong>Message:</strong>
                         ${escapeHTML(request.message)}
                     </p>
+
 
                     <p>
                         <strong>Date:</strong>
@@ -1266,9 +1523,12 @@ function displayRequests(requests) {
 
                 <div class="request-actions">
 
-                    <label for="request-status-${request.id}">
+                    <label
+                        for="request-status-${request.id}"
+                    >
                         Update Status
                     </label>
+
 
                     <select
                         id="request-status-${request.id}"
@@ -1329,6 +1589,126 @@ function displayRequests(requests) {
 
 
 /* =========================================
+   TASK 8
+   SEARCH EVENT
+========================================= */
+
+if (requestSearch) {
+
+    let searchTimeout;
+
+
+    requestSearch.addEventListener(
+        "input",
+        () => {
+
+            clearTimeout(
+                searchTimeout
+            );
+
+
+            /*
+             * Wait 300ms after the user
+             * stops typing before calling
+             * the backend.
+             */
+
+            searchTimeout =
+                setTimeout(
+                    () => {
+
+                        loadRequests();
+
+                    },
+                    300
+                );
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   TASK 8
+   SERVICE FILTER EVENT
+========================================= */
+
+if (requestServiceFilter) {
+
+    requestServiceFilter.addEventListener(
+        "change",
+        () => {
+
+            loadRequests();
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   TASK 8
+   STATUS FILTER EVENT
+========================================= */
+
+if (requestStatusFilter) {
+
+    requestStatusFilter.addEventListener(
+        "change",
+        () => {
+
+            loadRequests();
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   TASK 8
+   CLEAR FILTERS
+========================================= */
+
+if (clearRequestFilters) {
+
+    clearRequestFilters.addEventListener(
+        "click",
+        () => {
+
+            if (requestSearch) {
+
+                requestSearch.value = "";
+
+            }
+
+
+            if (requestServiceFilter) {
+
+                requestServiceFilter.value = "";
+
+            }
+
+
+            if (requestStatusFilter) {
+
+                requestStatusFilter.value = "";
+
+            }
+
+
+            loadRequests();
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   TASK 7
    UPDATE REQUEST STATUS
 ========================================= */
 
@@ -1365,7 +1745,10 @@ async function updateRequestStatus(
             await response.json();
 
 
-        if (!response.ok || !data.success) {
+        if (
+            !response.ok ||
+            !data.success
+        ) {
 
             throw new Error(
                 data.message ||
@@ -1374,6 +1757,14 @@ async function updateRequestStatus(
 
         }
 
+
+        /*
+         * Reload requests after
+         * changing the status.
+         *
+         * If filters are active,
+         * the same filters stay active.
+         */
 
         await loadRequests();
 
@@ -1463,6 +1854,19 @@ document.addEventListener(
         await loadContent();
 
         await loadServices();
+
+        /*
+         * Task 8:
+         * Load service names into
+         * the service filter.
+         */
+
+        await loadRequestServiceFilter();
+
+        /*
+         * Task 7 + Task 8:
+         * Load customer requests.
+         */
 
         await loadRequests();
 

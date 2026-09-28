@@ -1131,7 +1131,9 @@ app.delete("/api/services/:id", requireAdmin, (req, res) => {
 // =========================================
 
 
+// =========================================
 // CUSTOMER: SUBMIT A SERVICE REQUEST
+// =========================================
 
 app.post("/api/requests", (req, res) => {
 
@@ -1233,40 +1235,190 @@ app.post("/api/requests", (req, res) => {
 });
 
 
-// ADMIN: GET ALL CUSTOMER REQUESTS
+// =========================================
+// ADMIN: GET CUSTOMER REQUESTS
+// TASK 8 — SEARCH & FILTERING
+// =========================================
 
 app.get("/api/requests", requireAdmin, (req, res) => {
 
-    const sql = `
-        SELECT *
+    const {
+        search = "",
+        service = "",
+        status = ""
+    } = req.query;
+
+
+    // =========================================
+    // CLEAN FILTER VALUES
+    // =========================================
+
+    const cleanSearch = search.trim();
+    const cleanService = service.trim();
+    const cleanStatus = status.trim();
+
+
+    // =========================================
+    // ALLOWED STATUSES
+    // =========================================
+
+    const allowedStatuses = [
+        "Pending",
+        "In Progress",
+        "Completed",
+        "Rejected"
+    ];
+
+
+    // =========================================
+    // VALIDATE STATUS FILTER
+    // =========================================
+
+    if (
+        cleanStatus &&
+        !allowedStatuses.includes(cleanStatus)
+    ) {
+
+        return res.status(400).json({
+            success: false,
+            message: "Invalid request status."
+        });
+    }
+
+
+    // =========================================
+    // BASE SQL QUERY
+    // =========================================
+
+    let sql = `
+        SELECT
+            id,
+            name,
+            email,
+            service,
+            message,
+            status,
+            created_at
         FROM requests
+        WHERE 1 = 1
+    `;
+
+
+    // =========================================
+    // SQL PARAMETERS
+    // =========================================
+
+    const params = [];
+
+
+    // =========================================
+    // SEARCH BY NAME / EMAIL / MESSAGE
+    // =========================================
+
+    if (cleanSearch) {
+
+        sql += `
+            AND (
+                name LIKE ?
+                OR email LIKE ?
+                OR message LIKE ?
+            )
+        `;
+
+        const searchValue =
+            `%${cleanSearch}%`;
+
+        params.push(
+            searchValue,
+            searchValue,
+            searchValue
+        );
+    }
+
+
+    // =========================================
+    // FILTER BY SERVICE
+    // =========================================
+
+    if (cleanService) {
+
+        sql += `
+            AND service = ?
+        `;
+
+        params.push(cleanService);
+    }
+
+
+    // =========================================
+    // FILTER BY STATUS
+    // =========================================
+
+    if (cleanStatus) {
+
+        sql += `
+            AND status = ?
+        `;
+
+        params.push(cleanStatus);
+    }
+
+
+    // =========================================
+    // SORT NEWEST FIRST
+    // =========================================
+
+    sql += `
         ORDER BY created_at DESC
     `;
 
-    db.all(sql, [], (err, rows) => {
 
-        if (err) {
+    // =========================================
+    // EXECUTE QUERY
+    // =========================================
 
-            console.error(
-                "Error loading requests:",
-                err.message
-            );
+    db.all(
+        sql,
+        params,
+        (err, rows) => {
 
-            return res.status(500).json({
-                success: false,
-                message: "Unable to load requests."
+            if (err) {
+
+                console.error(
+                    "Request search/filter error:",
+                    err.message
+                );
+
+                return res.status(500).json({
+                    success: false,
+                    message:
+                        "Unable to search customer requests."
+                });
+            }
+
+
+            // =========================================
+            // SEND RESULTS
+            // =========================================
+
+            return res.status(200).json({
+                success: true,
+                requests: rows,
+
+                filters: {
+                    search: cleanSearch,
+                    service: cleanService,
+                    status: cleanStatus
+                }
             });
         }
-
-        return res.status(200).json({
-            success: true,
-            requests: rows
-        });
-    });
+    );
 });
 
 
+// =========================================
 // ADMIN: UPDATE REQUEST STATUS
+// =========================================
 
 app.put("/api/requests/:id", requireAdmin, (req, res) => {
 
