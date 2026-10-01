@@ -44,6 +44,7 @@ db.run(`
         name TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'Employee',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
 `, (err) => {

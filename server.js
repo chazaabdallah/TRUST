@@ -18,6 +18,24 @@ if (!fs.existsSync(dbFolder)) {
 
 const db = require("./database/database");
 
+db.run(
+    `
+    ALTER TABLE users
+    ADD COLUMN role TEXT NOT NULL DEFAULT 'Employee'
+    `,
+    (err) => {
+
+        if (
+            err &&
+            !err.message.includes("duplicate column name")
+        ) {
+            console.error(
+                "Role column migration error:",
+                err.message
+            );
+        }
+    }
+);
 
 // =========================================
 // TASK 7 - CUSTOMER REQUESTS TABLE
@@ -72,8 +90,75 @@ function requireAdmin(req, res, next) {
 
     next();
 }
+function requireRole(...allowedRoles) {
+    return (req, res, next) => {
 
+        // Existing Admin authentication
+        const adminToken = req.headers["x-admin-token"];
 
+        if (adminToken === ADMIN_TOKEN) {
+            if (!allowedRoles.includes("Administrator")) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Access denied."
+                });
+            }
+
+            req.userRole = "Administrator";
+            next();
+            return;
+        }
+
+        // Normal user authentication
+        const token = req.headers["x-auth-token"];
+
+        if (!token || !userTokens.has(token)) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized. Please log in."
+            });
+        }
+
+        const userId = userTokens.get(token);
+
+        db.get(
+            `
+            SELECT id, name, email, role
+            FROM users
+            WHERE id = ?
+            `,
+            [userId],
+            (err, user) => {
+
+                if (err) {
+                    return res.status(500).json({
+                        success: false,
+                        message: "Unable to verify user role."
+                    });
+                }
+
+                if (!user) {
+                    return res.status(401).json({
+                        success: false,
+                        message: "User not found."
+                    });
+                }
+
+                if (!allowedRoles.includes(user.role)) {
+                    return res.status(403).json({
+                        success: false,
+                        message: "Access denied."
+                    });
+                }
+
+                req.userId = user.id;
+                req.userRole = user.role;
+
+                next();
+            }
+        );
+    };
+}
 // =========================================
 // USER AUTHENTICATION
 // =========================================
@@ -135,7 +220,8 @@ app.post("/api/admin/login", (req, res) => {
         return res.status(200).json({
             success: true,
             message: "Login successful.",
-            token: ADMIN_TOKEN
+            token: ADMIN_TOKEN,
+            role: "Administrator"
         });
     }
 
@@ -218,14 +304,16 @@ app.post("/api/auth/register", async (req, res) => {
                 db.run(
                     `
                     INSERT INTO users
-                    (name, email, password)
-                    VALUES (?, ?, ?)
+                    (name, email, password,role)
+                    VALUES (?, ?, ?,?)
                     `,
                     [
                         cleanName,
                         cleanEmail,
-                        hashedPassword
-                    ],
+                        hashedPassword,
+                        "Employee"
+                    ]
+                    ,
                     function (err) {
 
                         if (err) {
@@ -279,7 +367,7 @@ app.post("/api/auth/login", (req, res) => {
 
     db.get(
         `
-        SELECT id, name, email, password
+        SELECT id, name, email, password,role
         FROM users
         WHERE email = ?
         `,
@@ -327,7 +415,8 @@ app.post("/api/auth/login", (req, res) => {
                 user: {
                     id: user.id,
                     name: user.name,
-                    email: user.email
+                    email: user.email,
+                    role:user.role
                 }
             });
         }
@@ -343,7 +432,7 @@ app.get("/api/auth/me", requireUser, (req, res) => {
 
     db.get(
         `
-        SELECT id, name, email, created_at
+        SELECT id, name, email,role, created_at
         FROM users
         WHERE id = ?
         `,
@@ -569,7 +658,8 @@ app.put("/api/auth/me", requireUser, async (req, res) => {
                                 user: {
                                     id: user.id,
                                     name: cleanName,
-                                    email: cleanEmail
+                                    email: cleanEmail,
+                                    role: user.role
                                 }
                             });
                         }
@@ -602,7 +692,7 @@ app.post("/api/auth/logout", requireUser, (req, res) => {
 // GET CONTENT — TASK 3
 // =========================================
 
-app.get("/api/content", requireAdmin, (req, res) => {
+app.get("/api/content", requireRole("Administrator", "Employee"), (req, res) => {
 
     const sql = `
         SELECT *
@@ -633,7 +723,7 @@ app.get("/api/content", requireAdmin, (req, res) => {
 // ADD CONTENT — TASK 3
 // =========================================
 
-app.post("/api/content", requireAdmin, (req, res) => {
+app.post("/api/content", requireRole("Administrator"), (req, res) => {
 
     const {
         title,
@@ -703,7 +793,7 @@ app.post("/api/content", requireAdmin, (req, res) => {
 // EDIT CONTENT — TASK 3
 // =========================================
 
-app.put("/api/content/:id", requireAdmin, (req, res) => {
+app.put("/api/content/:id", requireRole("Administrator"), (req, res) => {
 
     const { id } = req.params;
 
@@ -783,7 +873,7 @@ app.put("/api/content/:id", requireAdmin, (req, res) => {
 // DELETE CONTENT — TASK 3
 // =========================================
 
-app.delete("/api/content/:id", requireAdmin, (req, res) => {
+app.delete("/api/content/:id",requireRole("Administrator"), (req, res) => {
 
     const { id } = req.params;
 
@@ -943,7 +1033,7 @@ app.get("/api/services", (req, res) => {
 });
 
 
-app.post("/api/services", requireAdmin, (req, res) => {
+app.post("/api/services", requireRole("Administrator"), (req, res) => {
 
     const {
         name,
@@ -1012,7 +1102,7 @@ app.post("/api/services", requireAdmin, (req, res) => {
 });
 
 
-app.put("/api/services/:id", requireAdmin, (req, res) => {
+app.put("/api/services/:id",requireRole("Administrator"), (req, res) => {
 
     const serviceId = req.params.id;
 
@@ -1088,7 +1178,7 @@ app.put("/api/services/:id", requireAdmin, (req, res) => {
 });
 
 
-app.delete("/api/services/:id", requireAdmin, (req, res) => {
+app.delete("/api/services/:id",requireRole("Administrator") , (req, res) => {
 
     const serviceId = req.params.id;
 
@@ -1240,8 +1330,10 @@ app.post("/api/requests", (req, res) => {
 // TASK 8 — SEARCH & FILTERING
 // =========================================
 
-app.get("/api/requests", requireAdmin, (req, res) => {
-
+app.get(
+    "/api/requests",
+    requireRole("Administrator", "Employee"),
+    (req, res) => {
     const {
         search = "",
         service = "",
@@ -1420,8 +1512,10 @@ app.get("/api/requests", requireAdmin, (req, res) => {
 // ADMIN: UPDATE REQUEST STATUS
 // =========================================
 
-app.put("/api/requests/:id", requireAdmin, (req, res) => {
-
+app.put(
+    "/api/requests/:id",
+    requireRole("Administrator", "Employee"),
+    (req, res) => {
     const { id } = req.params;
 
     const { status } = req.body;
