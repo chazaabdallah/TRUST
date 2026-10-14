@@ -462,6 +462,51 @@
 
         </section>
 
+        
+<!-- DOCUMENT MANAGEMENT -->
+<section id="documents" class="dashboard-section">
+    <div class="section-title">
+        <div>
+            <span class="card-label">DOCUMENTS</span>
+            <h2>My Documents</h2>
+            <p>Upload and manage your personal documents securely.</p>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <form id="documentUploadForm">
+            <div class="form-group">
+                <label for="documentFile">Choose a document (PDF, DOC, DOCX, TXT — max 5 MB)</label>
+                <input
+                    type="file"
+                    id="documentFile"
+                    name="document"
+                    accept=".pdf,.doc,.docx,.txt"
+                    required
+                >
+            </div>
+
+            <div class="profile-actions">
+                <button type="submit" class="primary-btn">
+                    Upload Document
+                </button>
+                <span id="documentMessage" class="form-feedback"></span>
+            </div>
+        </form>
+    </div>
+
+    <div class="dashboard-card" style="margin-top: 20px;">
+        <div class="card-header">
+            <h3>Uploaded Documents</h3>
+            <button type="button" id="refreshDocuments" class="primary-btn">
+                Refresh
+            </button>
+        </div>
+        <div id="documentsList">
+            Loading documents...
+        </div>
+    </div>
+</section>
 
         <footer class="dashboard-footer">
 

@@ -426,3 +426,168 @@ function showMessage(
 // =========================================
 
 loadUser();
+
+ 
+// =========================================
+// TASK 10 - DOCUMENT MANAGEMENT
+// =========================================
+
+const documentUploadForm = document.getElementById("documentUploadForm");
+const documentFile = document.getElementById("documentFile");
+const documentMessage = document.getElementById("documentMessage");
+const documentsList = document.getElementById("documentsList");
+const refreshDocuments = document.getElementById("refreshDocuments");
+
+
+// LOAD DOCUMENTS
+async function loadDocuments() {
+    try {
+        const response = await fetch("/api/documents", {
+            headers: { "x-auth-token": token }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to load documents.");
+        }
+
+        documentsList.replaceChildren();
+
+        if (!data.documents || data.documents.length === 0) {
+            documentsList.textContent = "No documents uploaded yet.";
+            return;
+        }
+
+        data.documents.forEach(doc => {
+            const item = document.createElement("div");
+            item.className = "info-row";
+
+            const details = document.createElement("div");
+
+            const name = document.createElement("strong");
+            name.textContent = doc.original_name;
+
+            const size = document.createElement("p");
+            size.textContent = `${(doc.size / 1024).toFixed(1)} KB`;
+
+            details.append(name, size);
+
+            const downloadBtn = document.createElement("button");
+            downloadBtn.type = "button";
+            downloadBtn.className = "primary-btn";
+            downloadBtn.textContent = "Download";
+
+            downloadBtn.addEventListener("click", async () => {
+                try {
+                    const response = await fetch(
+                        `/api/documents/${doc.id}/download`,
+                        { headers: { "x-auth-token": token } }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Download failed.");
+                    }
+
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+
+                    link.href = url;
+                    link.download = doc.original_name;
+                    link.click();
+
+                    URL.revokeObjectURL(url);
+                } catch (error) {
+                    alert(error.message);
+                }
+            });
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.type = "button";
+            deleteBtn.className = "primary-btn";
+            deleteBtn.textContent = "Delete";
+
+            deleteBtn.addEventListener("click", async () => {
+                if (!confirm(`Delete "${doc.original_name}"?`)) return;
+
+                try {
+                    const response = await fetch(
+                        `/api/documents/${doc.id}`,
+                        {
+                            method: "DELETE",
+                            headers: { "x-auth-token": token }
+                        }
+                    );
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(result.message || "Delete failed.");
+                    }
+
+                    loadDocuments();
+                } catch (error) {
+                    alert(error.message);
+                }
+            });
+
+            item.append(details, downloadBtn, deleteBtn);
+            documentsList.appendChild(item);
+        });
+
+    } catch (error) {
+        documentsList.textContent = error.message;
+    }
+}
+
+
+// UPLOAD DOCUMENT
+documentUploadForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const file = documentFile.files[0];
+
+    if (!file) {
+        showMessage(documentMessage, "Please select a file.", true);
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        showMessage(documentMessage, "Maximum file size is 5 MB.", true);
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("document", file);
+
+    try {
+        showMessage(documentMessage, "Uploading...", false);
+
+        const response = await fetch("/api/documents", {
+            method: "POST",
+            headers: { "x-auth-token": token },
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Upload failed.");
+        }
+
+        showMessage(documentMessage, "Document uploaded successfully!", false);
+        documentUploadForm.reset();
+        await loadDocuments();
+
+    } catch (error) {
+        showMessage(documentMessage, error.message, true);
+    }
+});
+
+
+// REFRESH DOCUMENTS
+refreshDocuments.addEventListener("click", loadDocuments);
+
+// LOAD DOCUMENTS WHEN DASHBOARD OPENS
+loadDocuments();

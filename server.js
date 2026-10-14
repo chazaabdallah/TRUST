@@ -4,7 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
-
+const multer = require("multer");
 
 // =========================================
 // DATABASE FOLDER
@@ -179,6 +179,53 @@ function requireUser(req, res, next) {
     next();
 }
 
+const uploadDir = path.join(__dirname, "uploads");
+
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const allowedTypes = {
+    ".pdf": "application/pdf",
+    ".doc": "application/msword",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".txt": "text/plain"
+};
+
+const storage = multer.diskStorage({
+    destination: uploadDir,
+    filename: (req, file, cb) => {
+        cb(null, crypto.randomBytes(16).toString("hex") +
+            path.extname(file.originalname).toLowerCase());
+    }
+});
+
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        const ext = path.extname(file.originalname).toLowerCase();
+
+        if (allowedTypes[ext] !== file.mimetype) {
+            return cb(new Error("Only PDF, DOC, DOCX, and TXT files are allowed."));
+        }
+
+        cb(null, true);
+    }
+});
+
+db.run(`
+    CREATE TABLE IF NOT EXISTS documents (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        original_name TEXT NOT NULL,
+        stored_name TEXT NOT NULL,
+        mime_type TEXT NOT NULL,
+        size INTEGER NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+`);
+
 
 // =========================================
 // MIDDLEWARE
@@ -195,7 +242,107 @@ app.use(express.urlencoded({ extended: true }));
 // SERVE FRONTEND
 // =========================================
 
+app.use("/uploads", (req, res) => res.sendStatus(404));
 app.use(express.static(__dirname));
+
+app.post("/api/documents", requireUser, (req, res, next) => {
+    upload.single("document")(req, res, (err) => {
+        if (err) {
+            return res.status(400).json({
+                success: false,
+                message: err.message
+            });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "Please select a file."
+            });
+        }
+
+        db.run(
+            `INSERT INTO documents
+            (user_id, original_name, stored_name, mime_type, size)
+            VALUES (?, ?, ?, ?, ?)`,
+            [
+                req.userId,
+                path.basename(req.file.originalname),
+                req.file.filename,
+                req.file.mimetype,
+                req.file.size
+            ],
+            function (dbError) {
+                if (dbError) {
+                    fs.unlink(req.file.path, () => {});
+                    return res.status(500).json({
+                        success: false,
+                        message: "Could not save document."
+                    });
+                }
+
+                res.json({
+                    success: true,
+                    message: "Document uploaded successfully.",
+                    id: this.lastID
+                });
+            }
+        );
+    });
+});
+
+app.get("/api/documents", requireUser, (req, res) => {
+    db.all(
+        `SELECT id, original_name, mime_type, size, created_at
+         FROM documents WHERE user_id = ? ORDER BY id DESC`,
+        [req.userId],
+        (err, documents) => {
+            if (err) {
+                return res.status(500).json({ success: false });
+            }
+            res.json({ success: true, documents });
+        }
+    );
+});
+
+app.get("/api/documents/:id/download", requireUser, (req, res) => {
+    db.get(
+        "SELECT * FROM documents WHERE id = ? AND user_id = ?",
+        [req.params.id, req.userId],
+        (err, doc) => {
+            if (err || !doc) {
+                return res.status(404).json({ message: "Document not found." });
+            }
+
+            res.download(path.join(uploadDir, doc.stored_name), doc.original_name);
+        }
+    );
+});
+
+app.delete("/api/documents/:id", requireUser, (req, res) => {
+    db.get(
+        "SELECT * FROM documents WHERE id = ? AND user_id = ?",
+        [req.params.id, req.userId],
+        (err, doc) => {
+            if (err || !doc) {
+                return res.status(404).json({ message: "Document not found." });
+            }
+
+            db.run(
+                "DELETE FROM documents WHERE id = ? AND user_id = ?",
+                [req.params.id, req.userId],
+                function (deleteError) {
+                    if (deleteError) {
+                        return res.status(500).json({ message: "Delete failed." });
+                    }
+
+                    fs.unlink(path.join(uploadDir, doc.stored_name), () => {});
+                    res.json({ success: true, message: "Document deleted." });
+                }
+            );
+        }
+    );
+});
 
 
 // =========================================
